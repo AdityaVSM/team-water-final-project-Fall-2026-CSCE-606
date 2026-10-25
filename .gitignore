@@ -67,3 +67,14 @@ yarn-debug.log*
 /storage/*
 !/storage/.keep
 /public/uploads
+
+# Additional Rails credentials
+/config/credentials/*.key
+
+# Local environment files
+.env.*
+!.env.example
+
+# Editor-specific settings
+.vscode/
+.idea/
