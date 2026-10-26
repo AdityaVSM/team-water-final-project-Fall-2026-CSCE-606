@@ -24,6 +24,11 @@
   </head>
 
   <body>
+    <% flash.each do |type, message| %>
+  <div role="<%= type.to_s == 'alert' ? 'alert' : 'status' %>">
+    <%= message %>
+  </div>
+  <% end %>
     <%= yield %>
   </body>
 </html>

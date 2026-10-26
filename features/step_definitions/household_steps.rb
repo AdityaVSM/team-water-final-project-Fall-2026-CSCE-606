@@ -67,3 +67,72 @@ Then("I should see {string}") do |message|
     raise "Expected to see '#{message}' on the page"
   end
 end
+
+
+Given("I already belong to {string}") do |name|
+  household = Household.find_by!(name: name)
+  user = User.find_by!(email: @current_user_email)
+
+  household.household_memberships.find_or_create_by!(user: user)
+end
+
+Given("I am not logged in") do
+  @current_user_email = nil
+
+  # Clear any authentication session for this scenario.
+  delete "/logout"
+end
+
+When("I try to join {string} using its invitation code") do |name|
+  household = Household.find_by!(name: name)
+
+  @membership_count_before = household.household_memberships.count
+
+  post "/join-household",
+       invite_code: household.invite_code
+
+  @membership_count_after = household.household_memberships.count
+end
+
+When("I try to view the household {string}") do |name|
+  household = Household.find_by!(name: name)
+
+  @access_denied = false
+
+  begin
+    get "/households/#{household.id}"
+  rescue ActiveRecord::RecordNotFound
+    @access_denied = true
+  end
+end
+
+Then("I should be redirected to the login page") do
+  unless last_response.redirect? &&
+         URI.parse(last_response.headers["Location"]).path == "/login"
+    raise "Expected a redirect to /login, got #{last_response.status}"
+  end
+end
+
+Then("I should not have joined {string}") do |name|
+  unless @membership_count_before == @membership_count_after
+    raise "A membership was created without authentication"
+  end
+end
+
+Then("I should have exactly one membership in {string}") do |name|
+  household = Household.find_by!(name: name)
+  user = User.find_by!(email: @current_user_email)
+
+  count = household.household_memberships.where(user: user).count
+
+  unless count == 1
+    raise "Expected exactly one membership, found #{count}"
+  end
+end
+
+Then("I should receive a not found response") do
+  unless @access_denied || last_response.status == 404
+    raise "Expected access to be denied with HTTP 404"
+  end
+end
+
