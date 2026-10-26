@@ -1,0 +1,23 @@
+
+<h1>Join a Household</h1>
+
+<p>Enter the invitation code shared by your roommate.</p>
+
+<% if flash[:alert] %>
+  <p role="alert"><%= flash[:alert] %></p>
+<% end %>
+
+<%= form_with url: join_household_path, method: :post do |form| %>
+  <div>
+    <%= form.label :invite_code, "Invitation Code" %>
+    <%= form.text_field :invite_code,
+                        required: true,
+                        autocomplete: "off" %>
+  </div>
+
+  <%= form.submit "Join Household" %>
+<% end %>
+
+<p>
+  <%= link_to "Back to My Households", households_path %>
+</p>

@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_25_002240) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_26_204537) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "household_memberships", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "household_id", null: false
-    t.string "role", default: "member", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["household_id"], name: "index_household_memberships_on_household_id"
@@ -30,7 +29,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_002240) do
     t.bigint "creator_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "invite_code"
     t.index ["creator_id"], name: "index_households_on_creator_id"
+    t.index ["invite_code"], name: "index_households_on_invite_code", unique: true
   end
 
   create_table "users", force: :cascade do |t|

@@ -20,3 +20,97 @@ Follow-up actions taken to prevent the incident from happening again
 
 ## Debug Pointers (optional, as appropriate)
 Useful information for a developer trying to debug a piece of code, e.g. solutions or workarounds already tried, tries in attempting a fix that did not work
+
+
+## Current Implementation
+
+Roommate OS is a web-based application designed to help roommates
+manage their shared household responsibilities.
+
+The application is being developed using Ruby on Rails and PostgreSQL.
+
+### Implemented Features
+
+#### User Authentication
+- User registration with name, email, and password
+- Secure password hashing using bcrypt
+- User login and logout
+- Session-based authentication
+- Protected pages accessible only to authenticated users
+
+#### Household Management
+- Create a household with a custom name
+- Automatically add the creator as a household member
+- View households associated with the logged-in user
+- View household details and members
+- Restrict household access to authorized members
+
+#### Household Invitations
+- Generate a unique invitation code for each household
+- Allow existing members to share invitation codes
+- Join a household using a valid code
+- Prevent duplicate household memberships
+- Display appropriate errors for invalid invitation codes
+
+### Household Permissions
+
+All household members have equal permissions.
+
+There are no admin or privileged member roles. The person who
+creates a household has the same household permissions as any
+roommate who joins using an invitation code.
+
+### Technology Stack
+
+- Ruby 3.4.10
+- Ruby on Rails 8.1.4
+- PostgreSQL
+- RSpec for automated model and request testing
+- Cucumber for acceptance testing
+- SimpleCov for code coverage
+
+### Running the Application
+
+Install dependencies:
+
+```bash
+bundle install
+```
+
+Prepare the database:
+
+```bash
+bin/rails db:prepare
+```
+
+Start the Rails server:
+
+```bash
+bin/rails server
+```
+
+Open http://localhost:3000.
+
+### Running Tests
+
+Run the RSpec suite:
+
+```bash
+bundle exec rspec
+```
+
+Run the Cucumber acceptance tests:
+
+```bash
+bundle exec cucumber --publish-quiet
+```
+
+RSpec coverage reports are generated under `coverage/`.
+
+### Current Development Status
+
+US01 — Household Creation & Invitations has been implemented
+and verified through automated and manual testing.
+
+Additional modules for bills, chores, inventory, house rules,
+and the household dashboard are planned or under development.

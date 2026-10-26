@@ -1,0 +1,35 @@
+
+<h1><%= @household.name %></h1>
+
+<p>
+  Created by: <%= @household.creator.name %>
+</p>
+
+<h2>Household Members</h2>
+
+<ul>
+  <% @household.household_memberships.includes(:user).each do |membership| %>
+    <li>
+      <%= membership.user.name %>
+    </li>
+  <% end %>
+</ul>
+
+<section>
+  <h2>Invite Roommates</h2>
+
+  <p>Share this invitation code with your roommates:</p>
+
+  <p>
+    <strong><%= @household.invite_code %></strong>
+  </p>
+
+  <p>
+    Anyone with this code can join your household.
+    Only share it with people you trust.
+  </p>
+</section>
+
+<p>
+  <%= link_to "Back to My Households", households_path %>
+</p>

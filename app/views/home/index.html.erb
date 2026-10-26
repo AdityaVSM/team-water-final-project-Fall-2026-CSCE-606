@@ -1,0 +1,9 @@
+<h1>Welcome to Roommate OS!</h1>
+
+<p>Hello, <%= current_user.name %>!</p>
+
+<p>Your household management dashboard is coming soon.</p>
+<p>
+  <%= link_to "My Households", households_path %>
+</p>
+<%= button_to "Log Out", logout_path, method: :delete %>
