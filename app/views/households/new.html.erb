@@ -1,0 +1,23 @@
+<h1>Create a Household</h1>
+
+<% if @household.errors.any? %>
+  <div role="alert">
+    <h2>Please correct the following errors:</h2>
+    <ul>
+      <% @household.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: @household do |form| %>
+  <div>
+    <%= form.label :name, "Household Name" %>
+    <%= form.text_field :name, required: true %>
+  </div>
+
+  <%= form.submit "Create Household" %>
+<% end %>
+
+<%= link_to "Back to Households", households_path %>
