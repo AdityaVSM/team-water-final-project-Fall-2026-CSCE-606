@@ -1,6 +1,8 @@
 
 <h1><%= @household.name %></h1>
 
+<p><%= link_to "Open household dashboard", household_dashboard_path(@household) %></p>
+
 <p>
   Created by: <%= @household.creator.name %>
 </p>
