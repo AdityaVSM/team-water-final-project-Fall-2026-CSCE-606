@@ -1,6 +1,6 @@
 class HouseholdsController < ApplicationController
   before_action :require_login
-  before_action :set_household, only: [:show]
+  before_action :set_household, only: [ :show ]
 
   def index
     @households = current_user.households

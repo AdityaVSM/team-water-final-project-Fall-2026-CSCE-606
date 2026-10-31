@@ -135,4 +135,3 @@ Then("I should receive a not found response") do
     raise "Expected access to be denied with HTTP 404"
   end
 end
-
