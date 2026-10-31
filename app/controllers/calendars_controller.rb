@@ -10,15 +10,33 @@ class CalendarsController < ApplicationController
     to = parse_timestamp(params[:to], "to")
     raise ActionController::BadRequest, "to must be after from" if to < from
 
-    items = CalendarService.new.events_for(@household, from:, to:).map do |event|
-      {
-        type: "event",
-        event_id: event.event_id,
-        original_start: event.original_start.utc.iso8601,
-        name: event.name,
-        start_timestamp: event.start_timestamp.utc.iso8601,
-        end_timestamp: event.end_timestamp.utc.iso8601
-      }
+    items = CalendarService.new.calendar_items_for(@household, from:, to:).map do |item|
+      if item.type == :event
+        {
+          type: "event",
+          event_id: item.event_id,
+          original_start: item.original_start.utc.iso8601,
+          name: item.name,
+          start_timestamp: item.start_timestamp.utc.iso8601,
+          end_timestamp: item.end_timestamp.utc.iso8601
+        }
+      elsif item.type == :chore
+        {
+          type: "chore",
+          id: item.chore_id,
+          name: item.name,
+          due_at: item.start_timestamp.utc.iso8601,
+          assignee_ids: item.assignee_ids
+        }
+      else
+        {
+          type: item.type,
+          id: item.id,
+          name: item.name,
+          start_timestamp: item.start_timestamp.utc.iso8601,
+          end_timestamp: item.end_timestamp.utc.iso8601
+        }.merge(item.attributes)
+      end
     end
     render json: { items: }
   rescue ActionController::BadRequest => error

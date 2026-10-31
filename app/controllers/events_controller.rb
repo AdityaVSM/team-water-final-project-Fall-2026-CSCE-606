@@ -116,7 +116,7 @@ class EventsController < ApplicationController
 
   def authorize_event_management
     return if @event.created_by == current_user.id
-    return if @household.household_memberships.exists?(user_id: current_user.id, role: "admin")
+    return if @household.admin?(current_user)
 
     render json: { error: "only the creator or a household admin can change this event" }, status: :forbidden
   end
@@ -226,7 +226,7 @@ class EventsController < ApplicationController
   end
 
   def event_json(event)
-    {
+    attributes = {
       event_id: event.respond_to?(:event_id) ? event.event_id : event.id,
       household_id: event.household_id,
       name: event.name,
@@ -237,9 +237,12 @@ class EventsController < ApplicationController
       recurring: event.recurring,
       recurrence_until: event.recurrence_until&.iso8601,
       attendee_ids: event.attendee_ids,
-      created_by: event.created_by,
-      original_start: event.original_start&.utc&.iso8601
-    }.compact
+      created_by: event.created_by
+    }
+    if event.respond_to?(:original_start)
+      attributes[:original_start] = event.original_start.utc.iso8601
+    end
+    attributes
   end
 
   def occurrence_json(event, original_start, exception)
