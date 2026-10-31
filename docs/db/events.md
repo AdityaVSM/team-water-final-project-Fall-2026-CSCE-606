@@ -2,7 +2,7 @@
 
 Part of **Roommate OS**. Database: PostgreSQL.
 
-The calendar stores custom events only. Chore and bill due dates are read from their own tables when the combined calendar view is built, so they are not copied here.
+This schema describes custom calendar events only. Chore due dates are read from the separate chores tables when the combined calendar view is built, so they are not copied here. Bill management is not implemented.
 
 This module assumes `users` and `households` tables already exist (members module), each with a `user_id` / `household_id` primary key.
 

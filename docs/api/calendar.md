@@ -1,8 +1,8 @@
 # Calendar Module API
 
-Part of **Roommate OS**. The calendar is an in-app shared calendar for a household. It shows custom events plus chore and bill due dates.
+Part of **Roommate OS**. The calendar is an in-app shared calendar for a household. It shows custom events and chore due dates. The service can accept additional timestamped item types for future integrations; bill management is not implemented.
 
-External calendar sync (Google/Apple) is out of scope for the MVP. See `calendar-schema.md` for the database design.
+External calendar sync (Google/Apple) is out of scope for the MVP. See `../db/events.md` for the event database design and `../db/chores.md` for the chore database design.
 
 ## Conventions
 
@@ -38,7 +38,7 @@ Occurrences returned by the list endpoints also include `original_start`. It is 
 
 `GET /households/{hid}/calendar?from=&to=`
 
-Returns events, chore due dates and bill due dates for the date range. Chores and bills are read from their own tables, not copied into events. Recurring events are expanded, with single-occurrence edits and deletions applied.
+Returns events and chore due dates for the date range, and supports additional timestamped calendar item types for future integrations. Chores are read from their own table, not copied into events. Recurring events and chore due dates are expanded at read time, with single-occurrence event edits and deletions applied.
 
 | Query param | Required | Description |
 |---|---|---|
@@ -50,7 +50,7 @@ Returns events, chore due dates and bill due dates for the date range. Chores an
 {
   "items": [
     { "type": "event", "event_id": 12, "original_start": "2026-11-03T18:00:00Z", "name": "House meeting", "start_timestamp": "2026-11-03T18:00:00Z", "end_timestamp": "2026-11-03T19:00:00Z" },
-    { "type": "chore", "id": 4, "name": "Take out trash", "due_at": "2026-11-04T17:00:00Z", "assignee_id": 7 },
+    { "type": "chore", "id": 4, "name": "Take out trash", "due_at": "2026-11-04T17:00:00Z", "assignee_ids": [7] },
     { "type": "bill", "id": 9, "name": "Electricity", "due_at": "2026-11-05T00:00:00Z", "amount": "84.50" }
   ]
 }
