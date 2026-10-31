@@ -1,10 +1,12 @@
+
 require "rails_helper"
 
 RSpec.describe HouseholdMembership, type: :model do
   let(:user) do
     User.create!(
-      name: "Aditi",
-      email: "aditi@example.com"
+      name: "Test User",
+      email: "test@example.com",
+      password: "password123"
     )
   end
 
@@ -18,44 +20,39 @@ RSpec.describe HouseholdMembership, type: :model do
   it "allows a valid household membership" do
     membership = HouseholdMembership.new(
       user: user,
-      household: household,
-      role: "member"
+      household: household
     )
 
     expect(membership).to be_valid
   end
 
-  it "allows an admin role" do
+  it "requires a user" do
     membership = HouseholdMembership.new(
-      user: user,
-      household: household,
-      role: "admin"
-    )
-
-    expect(membership).to be_valid
-  end
-
-  it "rejects an invalid role" do
-    membership = HouseholdMembership.new(
-      user: user,
-      household: household,
-      role: "superadmin"
+      household: household
     )
 
     expect(membership).not_to be_valid
+    expect(membership.errors[:user]).not_to be_empty
+  end
+
+  it "requires a household" do
+    membership = HouseholdMembership.new(
+      user: user
+    )
+
+    expect(membership).not_to be_valid
+    expect(membership.errors[:household]).not_to be_empty
   end
 
   it "prevents duplicate household memberships" do
     HouseholdMembership.create!(
       user: user,
-      household: household,
-      role: "member"
+      household: household
     )
 
     duplicate = HouseholdMembership.new(
       user: user,
-      household: household,
-      role: "member"
+      household: household
     )
 
     expect(duplicate).not_to be_valid

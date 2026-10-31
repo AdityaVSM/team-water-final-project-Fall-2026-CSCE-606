@@ -2,11 +2,12 @@ require "rails_helper"
 
 RSpec.describe Household, type: :model do
   let(:creator) do
-    User.create!(
-      name: "Aditi",
-      email: "aditi@example.com"
-    )
-  end
+  User.create!(
+    name: "Aditi",
+    email: "aditi@example.com",
+    password: "password123"
+  )
+end
 
   it "is valid with a name and creator" do
     household = Household.new(

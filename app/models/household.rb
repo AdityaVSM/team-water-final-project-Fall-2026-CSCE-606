@@ -5,5 +5,9 @@ class Household < ApplicationRecord
   has_many :users, through: :household_memberships
   has_many :events, dependent: :destroy
 
+  has_secure_token :invite_code
+
   validates :name, presence: true
+  validates :invite_code, uniqueness: true, allow_nil: true
+  validates :invite_code, uniqueness: true, allow_nil: true
 end

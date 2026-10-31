@@ -1,0 +1,21 @@
+<h1>My Households</h1>
+
+<%= link_to "Create New Household", new_household_path %>
+<p>
+  <%= link_to "Join a Household", join_household_path %>
+</p>
+
+<% if @households.any? %>
+  <ul>
+    <% @households.each do |household| %>
+      <li>
+        <%= link_to household.name, household_path(household) %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>You haven't joined any households yet.</p>
+<p>
+  <%= link_to "Join a Household", join_household_path %>
+</p>
+<% end %>

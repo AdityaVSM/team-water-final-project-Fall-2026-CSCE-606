@@ -16,4 +16,23 @@ Rails.application.routes.draw do
     resources :events, only: %i[index create]
   end
   resources :events, only: %i[update destroy]
+  root "home#index"
+
+  get "/signup", to: "registrations#new", as: :signup
+  post "/signup", to: "registrations#create"
+
+  get "/login", to: "sessions#new", as: :login
+  post "/login", to: "sessions#create"
+
+  delete "/logout", to: "sessions#destroy", as: :logout
+  resources :households, only: [ :index, :new, :create, :show ] do
+    resource :dashboard, only: :show
+  end
+
+  get "/join-household",
+      to: "household_joins#new",
+      as: :join_household
+
+  post "/join-household",
+      to: "household_joins#create"
 end

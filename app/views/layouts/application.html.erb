@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title><%= content_for(:title) || "Roommate Os Scaffold" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -24,6 +24,11 @@
   </head>
 
   <body>
+    <% flash.each do |type, message| %>
+  <div role="<%= type.to_s == 'alert' ? 'alert' : 'status' %>">
+    <%= message %>
+  </div>
+  <% end %>
     <%= yield %>
   </body>
 </html>
