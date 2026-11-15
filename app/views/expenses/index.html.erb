@@ -6,6 +6,9 @@
       <h1>Expenses</h1>
       <p class="dashboard-subtitle">Everything your household has shared, newest first.</p>
     </div>
+
+    <%= link_to "Back to dashboard", household_dashboard_path(@household),
+                  class: "dashboard-button dashboard-button-secondary" %>
   </div>
 
   <section class="dashboard-panel" aria-labelledby="expense-list-heading">
