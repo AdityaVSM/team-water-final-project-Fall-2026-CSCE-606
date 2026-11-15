@@ -143,17 +143,39 @@
           <h2 id="bills-heading">Bills &amp; balances</h2>
 
           <!-- DONUT CHART & SPLIT SUMMARY -->
+          <%
+            total_owed_to_me = @balance[:total_owed_to_me].to_d
+            total_i_owe      = @balance[:total_i_owe].to_d
+            total_flow       = (total_owed_to_me + total_i_owe).to_f
+            if total_flow.positive?
+              owed_pct = ((total_owed_to_me.to_f / total_flow) * 100).round
+              owe_pct  = 100 - owed_pct
+            else
+              owed_pct = 0
+              owe_pct  = 0
+            end
+          %>
           <div class="dashboard-split-row">
             <div class="dashboard-donut-chart" aria-hidden="true">
               <svg viewBox="0 0 36 36" class="dashboard-donut-svg">
                 <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                       fill="none" stroke="#e8efe6" stroke-width="4.5" />
-                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none" stroke="#245a47" stroke-width="4.5"
-                      stroke-dasharray="65, 100" stroke-dashoffset="0" />
-                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none" stroke="#529471" stroke-width="4.5"
-                      stroke-dasharray="35, 100" stroke-dashoffset="-65" />
+                <% if total_flow.positive? %>
+                  <% if owed_pct.positive? %>
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          fill="none" stroke="#245a47" stroke-width="4.5"
+                          stroke-dasharray="<%= owed_pct %>, 100" stroke-dashoffset="0" />
+                  <% end %>
+                  <% if owe_pct.positive? %>
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          fill="none" stroke="#a35d32" stroke-width="4.5"
+                          stroke-dasharray="<%= owe_pct %>, 100" stroke-dashoffset="-<%= owed_pct %>" />
+                  <% end %>
+                <% else %>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        fill="none" stroke="#529471" stroke-width="4.5"
+                        stroke-dasharray="100, 100" stroke-dashoffset="0" />
+                <% end %>
               </svg>
             </div>
             <div class="dashboard-split-breakdown">

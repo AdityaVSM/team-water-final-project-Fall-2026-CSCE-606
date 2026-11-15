@@ -8,8 +8,8 @@ export default class extends Controller {
   }
 
   toggle() {
-    const sidebar = document.getElementById("dashboard-sidebar")
-    const backdrop = document.getElementById("dashboard-sidebar-backdrop")
+    const sidebar = this.hasSidebarTarget ? this.sidebarTarget : document.getElementById("dashboard-sidebar")
+    const backdrop = this.hasBackdropTarget ? this.backdropTarget : document.getElementById("dashboard-sidebar-backdrop")
     if (!sidebar) return
 
     if (sidebar.classList.contains("is-minimized")) {
@@ -26,8 +26,8 @@ export default class extends Controller {
   }
 
   close() {
-    const sidebar = document.getElementById("dashboard-sidebar")
-    const backdrop = document.getElementById("dashboard-sidebar-backdrop")
+    const sidebar = this.hasSidebarTarget ? this.sidebarTarget : document.getElementById("dashboard-sidebar")
+    const backdrop = this.hasBackdropTarget ? this.backdropTarget : document.getElementById("dashboard-sidebar-backdrop")
     if (sidebar) {
       sidebar.classList.add("is-minimized")
       sidebar.classList.remove("is-open")
@@ -36,6 +36,13 @@ export default class extends Controller {
       backdrop.classList.remove("is-open")
     }
     this.saveState(true)
+  }
+
+  closeDropdown(event) {
+    const dropdown = document.getElementById("household-dropdown")
+    if (dropdown && dropdown.hasAttribute("open") && !dropdown.contains(event.target)) {
+      dropdown.removeAttribute("open")
+    }
   }
 
   saveState(minimized) {
@@ -47,7 +54,7 @@ export default class extends Controller {
   restoreState() {
     try {
       const saved = localStorage.getItem("roommate_os_sidebar_minimized")
-      const sidebar = document.getElementById("dashboard-sidebar")
+      const sidebar = this.hasSidebarTarget ? this.sidebarTarget : document.getElementById("dashboard-sidebar")
       if (sidebar && saved === "false" && window.innerWidth > 900) {
         sidebar.classList.remove("is-minimized")
       }

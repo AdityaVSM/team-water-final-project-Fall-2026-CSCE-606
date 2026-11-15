@@ -102,13 +102,15 @@ class ExpensesController < ApplicationController
 
   def set_household
     @household = Household.find(params[:household_id])
-    session[:current_household_id] = @household.id if @household.persisted?
   end
 
   def check_membership
     unless @household.users.include?(current_user)
       redirect_to root_path, alert: "You are not a member of this household"
+      return
     end
+
+    session[:current_household_id] = @household.id if @household.persisted?
   end
 
   def expense_params
