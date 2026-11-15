@@ -3,6 +3,7 @@ class ExpensesController < ApplicationController
   before_action :require_login
   before_action :set_household
   before_action :check_membership
+  before_action :generate_recurring, only: [:index, :show]
   before_action :set_expense, only: [ :edit, :update, :destroy ]
   before_action :require_creator, only: [ :edit, :update, :destroy ]
 
@@ -82,6 +83,10 @@ class ExpensesController < ApplicationController
 
   private
 
+  def generate_recurring
+    Expense.generate_recurring(@household.expenses)
+  end
+
   def update_shares
     if split_type == "keep"
       !@expense.amount_changed? || @expense.rescale_shares
@@ -112,7 +117,7 @@ class ExpensesController < ApplicationController
   end
 
   def expense_params
-    params.require(:expense).permit(:title, :description, :amount, :expense_date, :due_date)
+    params.require(:expense).permit(:title, :description, :amount, :expense_date, :due_date, :recurrence)
   end
 
   def selected_member_ids

@@ -4,7 +4,7 @@
               method: expense.persisted? ? :patch : :post,
               scope: :expense,
               id: "expense-form",
-              class: "dashboard-chore-form" do |form| %>
+              class: "dashboard-form dashboard-chore-form" do |form| %>
   <div class="dashboard-form-field">
     <%= form.label :title, "Expense name" %>
     <%= form.text_field :title, maxlength: 200, required: true,
@@ -28,6 +28,15 @@
       <%= form.label :due_date, "Due date (optional)" %>
       <%= form.date_field :due_date %>
     </div>
+
+    <% if @expense.recurring_parent_id.nil? %>
+      <div class="dashboard-form-field">
+        <%= form.label :recurrence, "Repeats" %>
+        <%= form.select :recurrence,
+              [["Does not repeat", ""]] + Expense::RECURRENCES.map { |key, label| [label, key] } %>
+      </div>
+    <% end %>
+
   </div>
 
   <%= render "expenses/split_fields", editing: editing %>
