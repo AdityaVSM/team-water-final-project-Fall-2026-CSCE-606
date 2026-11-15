@@ -97,7 +97,10 @@ class RulesController < ApplicationController
   def check_membership
     unless @household.users.include?(current_user)
       redirect_to root_path, alert: "You are not a member of this household"
+      return
     end
+
+    session[:current_household_id] = @household.id if @household.persisted?
   end
 
   def set_rule
