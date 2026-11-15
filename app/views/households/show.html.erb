@@ -84,6 +84,27 @@
             Copy Invitation Code
           </button>
 
+          <div class="hd-field">
+            <h3>Send Invitation by Email</h3>
+            <p class="hd-muted">
+              Invite a roommate directly using their email address.
+            </p>
+
+            <%= form_with url: household_invitation_path(@household),
+                          method: :post, local: true do %>
+              <div class="hd-field">
+                <%= label_tag :email, "Roommate's Email Address" %>
+                <%= email_field_tag :email, nil,
+                      required: true,
+                      maxlength: 254,
+                      placeholder: "roommate@example.com" %>
+              </div>
+
+              <%= submit_tag "Send Invitation",
+                    class: "hd-button" %>
+            <% end %>
+          </div>
+
           <%= button_to "Revoke and Generate New Code",
                 regenerate_invite_code_household_path(@household),
                 method: :patch,

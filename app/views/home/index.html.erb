@@ -11,6 +11,8 @@
 
     <nav class="house-top-actions" aria-label="Account navigation">
       <%= link_to "Calendar", calendar_path %>
+      <%= link_to "Email Notification Settings",
+                  notification_preferences_path %>
       <%= button_to "Log Out", logout_path, method: :delete %>
     </nav>
   </header>
