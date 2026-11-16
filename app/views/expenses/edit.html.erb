@@ -49,6 +49,17 @@
         <span class="dashboard-form-hint">Optional</span>
       </div>
 
+      <% if @expense.recurring_parent_id.nil? %>
+        <div class="dashboard-form-field">
+          <%= form.label :recurrence, "Repeats" %>
+          <%= form.select :recurrence,
+                [["Does not repeat", ""]] + Expense::RECURRENCES.map { |key, label| [label, key] } %>
+          <span class="dashboard-form-hint">
+            Needs a due date. Each new bill is created about a week before it is due, with the same split.
+          </span>
+        </div>
+      <% end %>
+
       <% if @expense.paid_by_others? %>
         <p class="dashboard-form-hint">The split can't be changed because a payment has already been marked as paid.</p>
         <%= hidden_field_tag :split_type, "keep" %>

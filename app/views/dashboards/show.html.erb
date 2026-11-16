@@ -130,7 +130,7 @@
       <!-- RIGHT COLUMN CONTAINER FOR BILLS, INVENTORY, RULES -->
       <div class="dashboard-right-stack">
         <!-- CARD 2: BILLS & BALANCES -->
-        <section class="dashboard-card" aria-labelledby="bills-heading">
+        <section class="dashboard-card dashboard-card-clickable" aria-labelledby="bills-heading">
           <div class="dashboard-card-top">
             <span class="dashboard-card-number" aria-hidden="true">02</span>
             <p class="dashboard-status">
@@ -140,7 +140,7 @@
               <% else %>Settled up<% end %>
             </p>
           </div>
-          <h2 id="bills-heading">Bills &amp; balances</h2>
+          <h2 id="bills-heading"><%= link_to "Bills & balances", household_expenses_path(@household), class: "dashboard-card-stretched-link" %></h2>
 
           <!-- DONUT CHART & SPLIT SUMMARY -->
           <%
@@ -261,11 +261,6 @@
           <% else %>
             <p class="dashboard-card-footnote">Nothing pending for you</p>
           <% end %>
-
-          <p class="dashboard-card-footnote">
-            <%= link_to "Add expense", new_household_expense_path(@household) %> ·
-            <%= link_to "All expenses", household_expenses_path(@household) %>
-          </p>
         </section>
 
         <!-- CARD 3: INVENTORY ALERTS -->

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_233446) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_15_172310) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -37,7 +37,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_233446) do
     t.index ["created_by_id"], name: "index_chores_on_created_by_id"
     t.index ["household_id", "due_at"], name: "index_chores_on_household_id_and_due_at"
     t.index ["household_id"], name: "index_chores_on_household_id"
-    t.check_constraint "frequency::text = ANY (ARRAY['NONE'::character varying, 'DAILY'::character varying, 'WEEKLY'::character varying, 'MONTHLY'::character varying]::text[])", name: "chores_valid_frequency"
+    t.check_constraint "frequency::text = ANY (ARRAY['NONE'::character varying::text, 'DAILY'::character varying::text, 'WEEKLY'::character varying::text, 'MONTHLY'::character varying::text])", name: "chores_valid_frequency"
   end
 
   create_table "event_attendees", id: false, force: :cascade do |t|
@@ -97,9 +97,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_233446) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "due_date"
+    t.string "recurrence"
+    t.date "recurrence_next_on"
+    t.bigint "recurring_parent_id"
     t.index ["created_by_id"], name: "index_expenses_on_created_by_id"
     t.index ["due_date"], name: "index_expenses_on_due_date"
     t.index ["household_id"], name: "index_expenses_on_household_id"
+    t.index ["recurrence_next_on"], name: "index_expenses_on_recurrence_next_on"
+    t.index ["recurring_parent_id"], name: "index_expenses_on_recurring_parent_id"
   end
 
   create_table "household_memberships", force: :cascade do |t|
@@ -111,7 +116,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_233446) do
     t.index ["household_id"], name: "index_household_memberships_on_household_id"
     t.index ["user_id", "household_id"], name: "index_memberships_on_user_and_household", unique: true
     t.index ["user_id"], name: "index_household_memberships_on_user_id"
-    t.check_constraint "role::text = ANY (ARRAY['admin'::character varying, 'member'::character varying]::text[])", name: "household_memberships_valid_role"
+    t.check_constraint "role::text = ANY (ARRAY['admin'::character varying::text, 'member'::character varying::text])", name: "household_memberships_valid_role"
   end
 
   create_table "households", force: :cascade do |t|
@@ -233,6 +238,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_233446) do
   add_foreign_key "events", "users", column: "created_by"
   add_foreign_key "expense_participants", "expenses"
   add_foreign_key "expense_participants", "users"
+  add_foreign_key "expenses", "expenses", column: "recurring_parent_id", on_delete: :nullify
   add_foreign_key "expenses", "households"
   add_foreign_key "expenses", "users", column: "created_by_id"
   add_foreign_key "household_memberships", "households"

@@ -25,6 +25,25 @@ class Expense < ApplicationRecord
 
   PERCENTAGE_TOLERANCE = BigDecimal("0.01")
 
+  RECURRENCES = {
+    "weekly"   => "Weekly",
+    "biweekly" => "Every 2 weeks",
+    "monthly"  => "Monthly",
+    "yearly"   => "Yearly"
+  }.freeze
+  RECURRENCE_LEAD_DAYS = 7    # create each bill this many days before it is due
+  MAX_CATCH_UP = 12           # most bills created in one call, if nobody visited for a while
+
+  belongs_to :recurring_parent, class_name: "Expense", optional: true
+  has_many :occurrences, class_name: "Expense", foreign_key: :recurring_parent_id,
+                        inverse_of: :recurring_parent, dependent: :nullify
+
+  before_validation { self.recurrence = nil if recurrence.blank? }
+  validates :recurrence, inclusion: { in: RECURRENCES.keys }, allow_nil: true
+  validates :recurrence, absence: true, if: :recurring_parent_id?
+  validate :recurrence_requires_due_date
+  before_save :schedule_next_occurrence, if: :recurrence_changed?
+
   # member_ids: optional list of user ids; defaults to the whole household.
   # Always scoped to household members, so outside ids are ignored.
   def split_equally(member_ids = nil)
@@ -103,7 +122,79 @@ class Expense < ApplicationRecord
     yield
   end
 
+  def recurring?
+    recurrence.present?
+  end
+
+  def recurrence_label
+    RECURRENCES[recurrence]
+  end
+
+  # Creates every bill that is due within the lead window. Safe to call repeatedly:
+  # the row lock and the stored next date stop two requests from creating duplicates.
+  def generate_due_occurrences!(today = Date.current)
+    return 0 unless recurring?
+
+    created = 0
+    with_lock do
+      while recurring? && recurrence_next_on && recurrence_next_on <= today + RECURRENCE_LEAD_DAYS &&
+            created < MAX_CATCH_UP
+        create_occurrence!(recurrence_next_on)
+        update_column(:recurrence_next_on, next_due_after(recurrence_next_on))
+        created += 1
+      end
+    end
+    created
+  end
+
+  # scope can be Expense or a household's expenses
+  def self.generate_recurring(scope = Expense)
+    scope.where.not(recurrence: nil)
+        .where(recurrence_next_on: ..(Date.current + RECURRENCE_LEAD_DAYS))
+        .to_a.sum(&:generate_due_occurrences!)
+  end
+
   private
+
+  def recurrence_requires_due_date
+    errors.add(:due_date, "is required for a recurring expense") if recurring? && due_date.blank?
+  end
+
+  def schedule_next_occurrence
+    self.recurrence_next_on = (recurring? && due_date) ? next_due_after(due_date) : nil
+  end
+
+  # Monthly and yearly steps keep the original day of month, so Jan 31 goes to
+  # Feb 28, then back to Mar 31 instead of drifting to the 28th.
+  def next_due_after(date)
+    case recurrence
+    when "weekly"   then date + 7
+    when "biweekly" then date + 14
+    when "monthly"  then step_months(date, 1)
+    when "yearly"   then step_months(date, 12)
+    end
+  end
+
+  def step_months(date, months)
+    target = date >> months
+    day = [due_date.day, Time.days_in_month(target.month, target.year)].min
+    Date.new(target.year, target.month, day)
+  end
+
+  def create_occurrence!(due)
+    copy = occurrences.create!(
+      household: household, created_by: created_by,
+      title: title, description: description, amount: amount,
+      expense_date: due, due_date: due
+    )
+    expense_participants.each do |share|
+      copy.expense_participants.create!(user_id: share.user_id,
+                                        amount_owed: share.amount_owed,
+                                        payment_status: "pending")
+    end
+    copy
+  end
+
   def due_date_not_before_expense_date
     return if due_date.blank? || expense_date.blank?
     errors.add(:due_date, "can't be before the expense date") if due_date < expense_date
