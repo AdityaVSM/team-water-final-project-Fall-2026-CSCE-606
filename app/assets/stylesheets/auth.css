@@ -450,3 +450,29 @@
     font-size: 17px;
   }
 }
+
+/* Responsive home-page navigation */
+@media (max-width: 600px) {
+  .house-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .house-top-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .house-top-actions a,
+  .house-top-actions button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 9px 12px;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+}
