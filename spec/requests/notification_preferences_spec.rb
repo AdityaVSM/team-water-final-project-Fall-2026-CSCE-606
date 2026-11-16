@@ -29,7 +29,7 @@ RSpec.describe "Notification preferences", type: :request do
       get notification_preferences_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Email Notification Preferences")
+      expect(response.body).to include("Email Notifications")
       expect(response.body).to include("Save Preferences")
     end
 

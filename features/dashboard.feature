@@ -38,9 +38,9 @@ Feature: Household dashboard foundation
   Scenario: Help a new user get started
     Given I am logged in as "bob@example.com"
     When I open the dashboard home page
-    Then I should see "Create or join your first household"
-    And I should see "Create a household"
-    And I should see "Join a household"
+    Then I should see "Create a New Household"
+    And I should see "Create a Household"
+    And I should see "Join a Household"
 
   Scenario: Choose a household from the home page
     Given a household named "Water House" exists
@@ -66,8 +66,8 @@ Feature: Household dashboard foundation
   Scenario: Reach the dashboard home page after signing up
     Given I am not logged in
     When I register for a dashboard account with matching passwords
-    Then I should see "Welcome to Roommate OS!"
-    And I should see "Create or join your first household"
+    Then I should see "Let's get your living space set up."
+    And I should see "Create a New Household"
 
   Scenario: Reject an incomplete signup before granting dashboard access
     Given I am not logged in

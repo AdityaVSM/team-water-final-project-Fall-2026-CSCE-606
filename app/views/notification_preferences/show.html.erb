@@ -1,41 +1,116 @@
 <% content_for :title, "Notification Preferences | Roommate OS" %>
 
-<main>
-  <h1>Email Notification Preferences</h1>
+<div class="notification-page">
+  <header class="notification-topbar">
+    <%= link_to root_path, class: "notification-logo" do %>
+      <span aria-hidden="true">⌂</span>
+      <span>Roommate OS</span>
+    <% end %>
 
-  <p>Choose which Roommate OS emails you want to receive.</p>
+    <%= link_to "Back to Dashboard",
+                root_path,
+                class: "notification-back-link" %>
+  </header>
 
-  <%= form_with model: @notification_preference,
-                url: notification_preferences_path,
-                method: :patch,
-                local: true do |f| %>
+  <main class="notification-container">
+    <div class="notification-heading">
+      <span class="notification-eyebrow">ACCOUNT SETTINGS</span>
 
-    <fieldset>
-      <legend>Notification Settings</legend>
-
-      <p>
-        <%= f.check_box :email_bills %>
-        <%= f.label :email_bills, "Bills and expenses" %>
-      </p>
-      <p>Receive new expense alerts and payment reminders.</p>
-
-      <p>
-        <%= f.check_box :email_chores %>
-        <%= f.label :email_chores, "Chore notifications" %>
-      </p>
-      <p>Receive chore assignments and upcoming due date reminders.</p>
+      <h1>Email Notifications</h1>
 
       <p>
-        <%= f.check_box :email_household_activity %>
-        <%= f.label :email_household_activity, "Household activities" %>
+        Choose which Roommate OS updates you want to receive
+        in your inbox. You can change these preferences anytime.
       </p>
-      <p>Receive important household event and rule updates.</p>
-    </fieldset>
+    </div>
 
-    <%= f.submit "Save Preferences" %>
-  <% end %>
+    <section class="notification-card"
+             aria-labelledby="notification-settings-title">
 
-  <p>
-    <%= link_to "Back to Dashboard", root_path %>
-  </p>
-</main>
+      <div class="notification-card-header">
+        <div>
+          <h2 id="notification-settings-title">Notification Settings</h2>
+          <p>Manage your email preferences.</p>
+        </div>
+
+        <span class="notification-bell" aria-hidden="true">✉</span>
+      </div>
+
+      <%= form_with model: @notification_preference,
+                    url: notification_preferences_path,
+                    method: :patch,
+                    local: true do |f| %>
+
+        <% if @notification_preference.errors.any? %>
+          <div class="notification-errors" role="alert">
+            <p>Please correct the following errors:</p>
+            <ul>
+              <% @notification_preference.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <fieldset class="notification-fieldset">
+          <legend class="notification-visually-hidden">
+            Email notification preferences
+          </legend>
+
+          <div class="notification-option">
+            <div class="notification-option-text">
+              <%= f.label :email_bills, "Bills & Expenses" %>
+              <p>
+                Receive notifications about new shared expenses
+                and payment reminders.
+              </p>
+            </div>
+
+            <%= f.check_box :email_bills,
+                  class: "notification-checkbox" %>
+          </div>
+
+          <div class="notification-option">
+            <div class="notification-option-text">
+              <%= f.label :email_chores, "Chore Notifications" %>
+              <p>
+                Receive updates about chore assignments
+                and upcoming due dates.
+              </p>
+            </div>
+
+            <%= f.check_box :email_chores,
+                  class: "notification-checkbox" %>
+          </div>
+
+          <div class="notification-option">
+            <div class="notification-option-text">
+              <%= f.label :email_household_activity,
+                          "Household Activities" %>
+              <p>
+                Stay informed about household activity,
+                event updates, and rule proposals.
+              </p>
+            </div>
+
+            <%= f.check_box :email_household_activity,
+                  class: "notification-checkbox" %>
+          </div>
+        </fieldset>
+
+        <div class="notification-footer">
+          <p>
+            Your changes will apply to future email notifications.
+          </p>
+
+          <%= f.submit "Save Preferences",
+                class: "notification-save-button" %>
+        </div>
+      <% end %>
+    </section>
+
+    <div class="notification-bottom-nav">
+      <%= link_to "← Back to Dashboard", root_path %>
+    </div>
+  </main>
+</div>
