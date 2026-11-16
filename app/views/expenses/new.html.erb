@@ -8,4 +8,7 @@
   </div>
 
   <section class="dashboard-chores-page dashboard-chore-create" aria-labelledby="create-expense-heading">
-    <h2 id="create-exp
+    <h2 id="create-expense-heading">Expense details</h2>
+    <%= render "expenses/form", expense: @expense, editing: false, submit_label: "Create expense" %>
+  </section>
+<% end %>
