@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_03_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_15_172310) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -145,6 +145,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_130000) do
     t.check_constraint "room::text = ANY (ARRAY['living_room'::character varying, 'kitchen'::character varying, 'bedroom'::character varying, 'bathroom'::character varying, 'patio'::character varying]::text[])", name: "inventory_items_valid_room"
   end
 
+  create_table "notification_preferences", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.boolean "email_bills", default: true, null: false
+    t.boolean "email_chores", default: true, null: false
+    t.boolean "email_household_activity", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_notification_preferences_on_user_id", unique: true
+  end
+
   create_table "personal_event_attendees", force: :cascade do |t|
     t.bigint "personal_event_id", null: false
     t.bigint "user_id", null: false
@@ -169,16 +179,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_130000) do
     t.index ["household_id", "event_date"], name: "index_personal_events_on_household_id_and_event_date"
     t.index ["household_id"], name: "index_personal_events_on_household_id"
     t.check_constraint "visibility::text = ANY (ARRAY['private'::character varying, 'shared'::character varying]::text[])", name: "personal_events_valid_visibility"
-  end
-
-  create_table "notification_preferences", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.boolean "email_bills", default: true, null: false
-    t.boolean "email_chores", default: true, null: false
-    t.boolean "email_household_activity", default: true, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_notification_preferences_on_user_id", unique: true
   end
 
   create_table "rule_revisions", force: :cascade do |t|
@@ -271,9 +271,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_130000) do
   add_foreign_key "household_memberships", "users"
   add_foreign_key "households", "users", column: "creator_id"
   add_foreign_key "inventory_items", "households", on_delete: :cascade
-  add_foreign_key "personal_event_attendees", "personal_events", on_delete: :cascade
-  add_foreign_key "personal_events", "users", column: "creator_id", on_delete: :cascade
   add_foreign_key "notification_preferences", "users"
+  add_foreign_key "personal_event_attendees", "personal_events", on_delete: :cascade
+  add_foreign_key "personal_event_attendees", "users", on_delete: :cascade
+  add_foreign_key "personal_events", "households", on_delete: :cascade
+  add_foreign_key "personal_events", "users", column: "creator_id", on_delete: :cascade
   add_foreign_key "rule_revisions", "rules"
   add_foreign_key "rule_revisions", "users", column: "proposed_by_id"
   add_foreign_key "rule_votes", "rules"
