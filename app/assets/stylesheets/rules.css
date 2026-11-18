@@ -413,11 +413,103 @@
   border: 1px solid #d5ded6;
   border-radius: 0.75rem;
   overflow: hidden;
-  background: #f1f5ee;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
   position: relative;
+  min-height: 280px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.vault-map-embed-wrapper {
+  position: relative;
+  width: 100%;
+  flex: 1;
   min-height: 220px;
+  background: #eef3eb;
+}
+
+.vault-map-iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  border: none;
+  display: block;
+}
+
+.vault-map-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  border: 1px solid #c7d6c4;
+  border-radius: 20px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: #183f32;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.vault-map-badge-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #245a47;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.vault-map-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f8faf6;
+  border-top: 1px solid #e2e8df;
+  flex-wrap: wrap;
+}
+
+.vault-map-address-caption {
+  font-size: 0.82rem;
+  color: #52645d;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.vault-map-links-bar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.vault-map-btn {
+  background: #ffffff !important;
+  border: 1px solid #c8d8c6 !important;
+  color: #245a47 !important;
+  padding: 0.35rem 0.7rem !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  border-radius: 0.45rem !important;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.15s ease;
+}
+
+.vault-map-btn:hover {
+  background: #eef5eb !important;
+  border-color: #245a47 !important;
 }
 
 .vault-map-placeholder {
@@ -456,15 +548,6 @@
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(36, 90, 71, 0.35);
   margin-bottom: 0.75rem;
-  z-index: 1;
-}
-
-.vault-map-links-bar {
-  display: flex;
-  gap: 0.65rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 0.85rem;
   z-index: 1;
 }
 

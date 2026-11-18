@@ -230,28 +230,40 @@
 
         <!-- RIGHT: MAP PREVIEW & LINKS -->
         <div class="vault-map-container">
-          <div class="vault-map-placeholder">
-            <div class="vault-map-grid-pattern" aria-hidden="true"></div>
-            <div class="vault-map-pin-badge" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div class="vault-map-embed-wrapper">
+            <%
+              address_query = @household.mailing_address.presence || "#{@household.apartment_name.presence || @household.name}, College Station, TX"
+              clean_query = address_query.gsub("\n", ", ")
+              encoded_query = ERB::Util.url_encode(clean_query)
+              embed_map_src = "https://maps.google.com/maps?q=#{encoded_query}&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              google_url = @household.map_link.presence || "https://www.google.com/maps/search/?api=1&query=#{encoded_query}"
+              apple_url = "https://maps.apple.com/?q=#{encoded_query}"
+            %>
+            <iframe
+              class="vault-map-iframe"
+              title="<%= @household.name %> Map Location"
+              src="<%= embed_map_src %>"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen>
+            </iframe>
+
+            <div class="vault-map-badge">
+              <span class="vault-map-badge-dot"></span>
+              <span><%= @household.apartment_name.presence || @household.name %></span>
             </div>
-            <strong style="color: #1c332e; font-size: 1rem; z-index: 1;">
-              <%= @household.apartment_name.presence || @household.name %> Location
-            </strong>
-            <p style="font-size: 0.84rem; color: #52645d; margin: 0.25rem 0 0.75rem; z-index: 1;">
-              <%= (@household.mailing_address.presence || "1124 Texas Ave S, College Station, TX 77840").split("\n").first %>
-            </p>
+          </div>
 
+          <div class="vault-map-footer-bar">
+            <span class="vault-map-address-caption" title="<%= clean_query %>">
+              <%= clean_query %>
+            </span>
             <div class="vault-map-links-bar">
-              <% query = ERB::Util.url_encode(@household.mailing_address.presence || "#{@household.name}, College Station, TX") %>
-              <% google_url = @household.map_link.presence || "https://www.google.com/maps/search/?api=1&query=#{query}" %>
-              <% apple_url = "https://maps.apple.com/?q=#{query}" %>
-
-              <a href="<%= google_url %>" target="_blank" rel="noopener noreferrer" class="vault-action-btn" style="background: #ffffff; padding: 0.4rem 0.85rem; font-size: 0.84rem;">
+              <a href="<%= google_url %>" target="_blank" rel="noopener noreferrer" class="vault-map-btn" title="Open in Google Maps">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
                 Google Maps &nearr;
               </a>
-              <a href="<%= apple_url %>" target="_blank" rel="noopener noreferrer" class="vault-action-btn" style="background: #ffffff; padding: 0.4rem 0.85rem; font-size: 0.84rem;">
+              <a href="<%= apple_url %>" target="_blank" rel="noopener noreferrer" class="vault-map-btn" title="Open in Apple Maps">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
                 Apple Maps &nearr;
               </a>
