@@ -82,8 +82,11 @@
             <% participants.each do |participant| %>
               <tr>
                 <td>
-                  <%= participant.user.name %>
-                  <% if participant.user == current_user %><span class="dashboard-you">(you)</span><% end %>
+                  <span style="display: inline-flex; align-items: center; gap: 0.4rem;">
+                    <%= user_avatar_tag(participant.user, size: :sm) %>
+                    <span><%= participant.user.name %></span>
+                    <% if participant.user == current_user %><span class="dashboard-you">(you)</span><% end %>
+                  </span>
                 </td>
                 <td class="is-numeric">$<%= number_with_precision(participant.amount_owed, precision: 2) %></td>
                 <td>

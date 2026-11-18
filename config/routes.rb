@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
   delete "/logout", to: "sessions#destroy", as: :logout
   resource :notification_preferences, only: %i[show update]
+  resource :profile, only: %i[update]
 
   resources :households, only: [ :index, :new, :create, :show ] do
   member do

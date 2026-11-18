@@ -335,6 +335,68 @@
   transition: all 0.12s ease;
 }
 
+.dashboard-avatar-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 50%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  flex-shrink: 0;
+}
+
+.dashboard-avatar-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 2px #245a47;
+}
+
+.dashboard-user-profile-widget {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.65rem;
+  margin-bottom: 0.75rem;
+  border-radius: 0.5rem;
+  background: #f0f5eb;
+  border: 1px solid var(--dashboard-line);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dashboard-user-profile-widget:hover {
+  background: #e3ecdd;
+  border-color: #245a47;
+}
+
+.dashboard-user-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1c332e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-avatar-edit-trigger {
+  background: transparent;
+  border: 1px solid #c7d6c4;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #245a47;
+  padding: 0.15rem 0.5rem;
+  margin-left: 0.4rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dashboard-avatar-edit-trigger:hover {
+  background: #245a47;
+  color: #ffffff;
+}
+
 .dashboard-dropdown-item-name {
   overflow: hidden;
   text-overflow: ellipsis;

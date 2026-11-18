@@ -137,3 +137,214 @@
     font-size: 0.875rem;
   }
 }
+
+/* ==========================================================================
+   User Avatar Component (Preset + Gravatar + Initials)
+   ========================================================================== */
+
+.user-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  vertical-align: middle;
+  font-family: inherit;
+  font-weight: 700;
+  text-transform: uppercase;
+  user-select: none;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.user-avatar--sm {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.72rem;
+}
+
+.user-avatar--md {
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 0.95rem;
+}
+
+.user-avatar--lg {
+  width: 3.25rem;
+  height: 3.25rem;
+  font-size: 1.35rem;
+}
+
+.user-avatar-img {
+  object-fit: cover;
+  border: 1px solid #c7d6c4;
+}
+
+.user-avatar-emoji {
+  border: 1px solid #d5ded6;
+  font-size: 1.15em;
+  line-height: 1;
+}
+
+.user-avatar-initials {
+  background: #245a47;
+  color: #ffffff;
+  border: 1px solid #1c4537;
+}
+
+/* Avatar Picker Dialog */
+.avatar-dialog {
+  border: none;
+  border-radius: 0.85rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  max-width: 540px;
+  width: 90vw;
+  background: #ffffff;
+}
+
+.avatar-dialog::backdrop {
+  background: rgba(18, 33, 27, 0.6);
+  backdrop-filter: blur(2px);
+}
+
+.avatar-dialog-content {
+  padding: 1.5rem;
+}
+
+.avatar-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #edf2ec;
+}
+
+.avatar-dialog-header h3 {
+  font-size: 1.2rem;
+  font-weight: 750;
+  color: #1c332e;
+  margin: 0;
+}
+
+.avatar-dialog-close {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  color: #52645d;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.3rem;
+}
+
+.avatar-picker-section {
+  margin-bottom: 1.25rem;
+}
+
+.avatar-picker-section-label {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #536b63;
+  margin-bottom: 0.5rem;
+}
+
+.avatar-choice-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 1rem;
+  background: #f8faf6;
+  border: 1px solid #d5ded6;
+  border-radius: 0.65rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.avatar-choice-card:hover {
+  background: #eef5eb;
+  border-color: #245a47;
+}
+
+.avatar-choice-card.is-selected {
+  background: #eef5eb;
+  border-color: #245a47;
+  box-shadow: 0 0 0 2px rgba(36, 90, 71, 0.15);
+}
+
+.avatar-choice-radio {
+  accent-color: #245a47;
+}
+
+.avatar-choice-meta strong {
+  display: block;
+  font-size: 0.92rem;
+  color: #1c332e;
+}
+
+.avatar-choice-meta span {
+  display: block;
+  font-size: 0.78rem;
+  color: #536b63;
+}
+
+.avatar-presets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+  gap: 0.6rem;
+}
+
+.avatar-preset-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.65rem 0.4rem;
+  background: #f8faf6;
+  border: 1px solid #d5ded6;
+  border-radius: 0.65rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.avatar-preset-btn:hover {
+  background: #eef5eb;
+  border-color: #245a47;
+  transform: translateY(-1px);
+}
+
+.avatar-preset-btn.is-selected {
+  background: #eef5eb;
+  border-color: #245a47;
+  box-shadow: 0 0 0 2px rgba(36, 90, 71, 0.15);
+}
+
+.avatar-preset-btn .avatar-choice-radio {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  opacity: 0;
+}
+
+.avatar-preset-btn.is-selected .avatar-choice-radio {
+  opacity: 1;
+}
+
+.avatar-preset-label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #1c332e;
+}
+
+.avatar-dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #edf2ec;
+}

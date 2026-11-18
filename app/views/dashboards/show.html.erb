@@ -333,8 +333,10 @@
       <ul class="dashboard-member-list">
         <% @members.each do |member| %>
           <li>
-            <span class="dashboard-avatar" aria-hidden="true"><%= member.name.first.upcase %></span>
-            <span><%= member.name %><% if member == current_user %> <span class="dashboard-you">(you)</span><% end %>
+            <%= user_avatar_tag(member, size: :md, extra_class: "dashboard-avatar") %>
+            <span><%= member.name %><% if member == current_user %> <span class="dashboard-you">(you)</span>
+              <button type="button" class="dashboard-avatar-edit-trigger" onclick="document.getElementById('avatar-picker-dialog').showModal()" title="Change your avatar">Edit Avatar</button>
+            <% end %>
               <% if @household.admin?(member) %><span class="dashboard-admin-badge">Admin</span><% end %>
             </span>
           </li>

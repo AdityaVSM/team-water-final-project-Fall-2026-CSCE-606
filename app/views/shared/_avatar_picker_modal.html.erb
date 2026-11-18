@@ -1,0 +1,55 @@
+<dialog id="avatar-picker-dialog" class="avatar-dialog" aria-labelledby="avatar-picker-title">
+  <div class="avatar-dialog-content">
+    <div class="avatar-dialog-header">
+      <div>
+        <h3 id="avatar-picker-title">Choose Your Profile Avatar</h3>
+        <p style="margin: 0.2rem 0 0; font-size: 0.85rem; color: #536b63;">Choose your cute animal avatar or sync your email photo.</p>
+      </div>
+      <button type="button" class="avatar-dialog-close" onclick="document.getElementById('avatar-picker-dialog').close()" aria-label="Close dialog">&times;</button>
+    </div>
+
+    <%= form_with model: current_user, url: profile_path, method: :patch, local: true do |f| %>
+      <div class="avatar-picker-section">
+        <span class="avatar-picker-section-label">Automated Profile Picture</span>
+        <label class="avatar-choice-card <%= 'is-selected' if current_user.avatar_key == 'gravatar' %>">
+          <%= f.radio_button :avatar_key, "gravatar", class: "avatar-choice-radio" %>
+          <img src="<%= current_user.gravatar_url(80) %>" class="user-avatar user-avatar--md user-avatar-img" alt="Gravatar" />
+          <div class="avatar-choice-meta">
+            <strong>Gravatar / Email Photo</strong>
+            <span>Syncs photo automatically from <%= current_user.email %></span>
+          </div>
+        </label>
+      </div>
+
+      <div class="avatar-picker-section">
+        <span class="avatar-picker-section-label">Cute Animal Avatars</span>
+        <div class="avatar-presets-grid">
+          <% User::AVATAR_PRESETS.each do |key, preset| %>
+            <label class="avatar-preset-btn <%= 'is-selected' if current_user.avatar_key == key %>" title="<%= preset[:label] %>">
+              <%= f.radio_button :avatar_key, key, class: "avatar-choice-radio" %>
+              <span class="user-avatar user-avatar--md user-avatar-emoji" style="background-color: <%= preset[:bg] %>;"><%= preset[:emoji] %></span>
+              <span class="avatar-preset-label"><%= preset[:label] %></span>
+            </label>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="avatar-picker-section">
+        <span class="avatar-picker-section-label">Default Classic</span>
+        <label class="avatar-choice-card <%= 'is-selected' if current_user.avatar_key.in?([nil, '', 'initials']) %>">
+          <%= f.radio_button :avatar_key, "initials", class: "avatar-choice-radio" %>
+          <span class="user-avatar user-avatar--md user-avatar-initials"><%= current_user.name.first.upcase %></span>
+          <div class="avatar-choice-meta">
+            <strong>Initial Badge</strong>
+            <span>Classic letter badge (<%= current_user.name.first.upcase %>)</span>
+          </div>
+        </label>
+      </div>
+
+      <div class="avatar-dialog-actions">
+        <button type="button" class="dashboard-button dashboard-button-secondary" onclick="document.getElementById('avatar-picker-dialog').close()">Cancel</button>
+        <%= f.submit "Save Avatar", class: "dashboard-button" %>
+      </div>
+    <% end %>
+  </div>
+</dialog>

@@ -30,9 +30,7 @@
           <% @household.household_memberships.includes(:user).each do |membership| %>
             <li class="hd-member">
               <div class="hd-member-info">
-                <span class="hd-avatar" aria-hidden="true">
-                  <%= membership.user.name.to_s.first.upcase %>
-                </span>
+                <%= user_avatar_tag(membership.user, size: :md, extra_class: "hd-avatar") %>
 
                 <div>
                   <strong><%= membership.user.name %></strong>

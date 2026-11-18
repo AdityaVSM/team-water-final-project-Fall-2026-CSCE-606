@@ -336,7 +336,9 @@
 
             <h2><%= proposal.title %></h2>
             <p style="font-size: 0.82rem; color: var(--dashboard-muted); margin-bottom: 0.75rem;">
-              Proposed by <strong><%= proposal.created_by.name %></strong> on <%= proposal.created_at.strftime("%B %d, %Y") %>
+              <span style="display: inline-flex; align-items: center; gap: 0.35rem; vertical-align: middle;">
+                Proposed by <%= user_avatar_tag(proposal.created_by, size: :sm) %> <strong><%= proposal.created_by.name %></strong>
+              </span> on <%= proposal.created_at.strftime("%B %d, %Y") %>
               <% if proposal.parent_rule %>
                 (Amendment to <%= link_to proposal.parent_rule.title, household_rule_path(@household, proposal.parent_rule) %>)
               <% end %>
