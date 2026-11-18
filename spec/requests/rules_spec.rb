@@ -289,4 +289,61 @@ RSpec.describe "Rules management", type: :request do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  describe "PATCH /households/:household_id/rules/vault" do
+    let(:vault_params) do
+      {
+        household: {
+          wifi_ssid: "WaterHouse_5G",
+          wifi_password: "SecretPassword99",
+          trash_pickup: "Every Tuesday 8:00 AM",
+          landlord_hotline: "(979) 555-9999",
+          apartment_name: "Water House Suites Apt 2B",
+          mailing_address: "123 Water St\nCollege Station, TX 77840",
+          map_link: "https://maps.google.com/?q=Water+House"
+        }
+      }
+    end
+
+    it "allows household admins to update vault details" do
+      household.household_memberships.find_by(user: creator).update!(role: "admin")
+      login_as(creator)
+      patch vault_household_rules_path(household), params: vault_params
+
+      expect(response).to redirect_to(household_rules_path(household))
+      expect(flash[:notice]).to eq("Household info & vault updated successfully.")
+
+      household.reload
+      expect(household.wifi_ssid).to eq("WaterHouse_5G")
+      expect(household.wifi_password).to eq("SecretPassword99")
+      expect(household.trash_pickup).to eq("Every Tuesday 8:00 AM")
+      expect(household.landlord_hotline).to eq("(979) 555-9999")
+      expect(household.apartment_name).to eq("Water House Suites Apt 2B")
+      expect(household.mailing_address).to eq("123 Water St\nCollege Station, TX 77840")
+      expect(household.map_link).to eq("https://maps.google.com/?q=Water+House")
+    end
+
+    it "prevents non-admin household members from updating vault details" do
+      login_as(member) # member has role: "member"
+      patch vault_household_rules_path(household), params: vault_params
+
+      expect(response).to redirect_to(household_rules_path(household))
+      expect(flash[:alert]).to eq("Only household admins can update household info and vault details.")
+
+      household.reload
+      expect(household.wifi_ssid).not_to eq("WaterHouse_5G")
+    end
+
+    it "redirects unauthenticated users to login" do
+      patch vault_household_rules_path(household), params: vault_params
+      expect(response).to redirect_to(login_path)
+    end
+
+    it "redirects outsiders to root with an alert" do
+      login_as(outsider)
+      patch vault_household_rules_path(household), params: vault_params
+      expect(response).to redirect_to(root_path)
+      expect(flash[:alert]).to eq("You are not a member of this household")
+    end
+  end
 end

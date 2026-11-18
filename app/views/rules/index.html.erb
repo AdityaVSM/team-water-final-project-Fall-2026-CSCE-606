@@ -1,4 +1,4 @@
-<% content_for :title, "#{@household.name} Rules & Agreements | Roommate OS" %>
+<% content_for :title, "#{@household.name} House Hub | Roommate OS" %>
 
 <div class="dashboard-shell">
   <%= render "shared/dashboard_header" %>
@@ -9,34 +9,261 @@
       <span aria-hidden="true">/</span>
       <%= link_to @household.name, household_dashboard_path(@household) %>
       <span aria-hidden="true">/</span>
-      <span aria-current="page">Rules &amp; Agreements</span>
+      <span aria-current="page">House Hub</span>
     </nav>
 
     <div class="dashboard-heading">
       <div>
-        <p class="dashboard-eyebrow">Household rules &amp; agreements</p>
-        <h1><%= @household.name %> Rules &amp; Agreements</h1>
-        <p class="dashboard-subtitle">Shared expectations, agreements, and open rule proposals.</p>
+        <p class="dashboard-eyebrow">Household central hub</p>
+        <h1><%= @household.name %> House Hub</h1>
+        <p class="dashboard-subtitle">Household vault, shared agreements, and property details.</p>
       </div>
       <div class="dashboard-actions">
         <%= link_to "Propose a New Rule", new_household_rule_path(@household), class: "dashboard-button" %>
+        <% if @household.admin?(current_user) %>
+          <button type="button" class="dashboard-button dashboard-button-secondary" onclick="document.getElementById('vault-edit-dialog').showModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit Vault &amp; Info
+          </button>
+        <% end %>
         <%= link_to "Household Details", household_path(@household), class: "dashboard-button dashboard-button-secondary" %>
       </div>
     </div>
 
-    <section class="dashboard-overview" aria-labelledby="overview-heading">
-      <div>
-        <p class="dashboard-eyebrow">Agreements &amp; Governance</p>
-        <h2 id="overview-heading">Clear Expectations for Harmonious Living</h2>
-        <p>Propose rules, discuss, and vote with roommates. Approved agreements are established by democratic majority vote.</p>
+    <!-- ====================================================================
+         SECTION 1: TOP 2-COLUMN GRID (VAULT & ACTIVE POLLS)
+         ==================================================================== -->
+    <div class="vault-grid">
+      <!-- CARD 1: HOUSEHOLD INFO & VAULT -->
+      <section class="vault-card" aria-labelledby="vault-heading">
+        <div>
+          <div class="vault-card-header">
+            <div class="vault-card-title-wrap">
+              <span class="vault-card-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </span>
+              <h2 id="vault-heading">Household Info &amp; Vault</h2>
+            </div>
+            <span class="vault-badge-secure">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Shared Vault
+            </span>
+          </div>
+
+          <div class="vault-info-rows">
+            <!-- WI-FI DETAILS -->
+            <div class="vault-info-item">
+              <span class="vault-info-label">Wi-Fi Network (SSID) &amp; Password</span>
+              <div class="vault-info-value-row">
+                <div>
+                  <span class="vault-info-text"><%= @household.wifi_ssid.presence || "Apartment_5G" %></span>
+                  <span style="color: #63756e; margin: 0 0.4rem;">·</span>
+                  <span class="vault-info-text" id="vault-wifi-password-display">••••••••</span>
+                  <span id="vault-wifi-password-raw" style="display: none;"><%= @household.wifi_password.presence || "Roommate#2026" %></span>
+                </div>
+                <div style="display: flex; gap: 0.4rem;">
+                  <button type="button" class="vault-action-btn" onclick="togglePasswordVisibility()" title="Show/Hide Password" aria-label="Toggle password visibility">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span id="vault-pwd-toggle-label">Show</span>
+                  </button>
+                  <button type="button" class="vault-action-btn" onclick="copyToClipboard(document.getElementById('vault-wifi-password-raw').textContent, this)" title="Copy Wi-Fi Password" aria-label="Copy Wi-Fi Password">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <span>Copy</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- TRASH PICKUP -->
+            <div class="vault-info-item">
+              <span class="vault-info-label">Trash &amp; Recycling Pickup</span>
+              <div class="vault-info-value-row">
+                <span class="vault-info-text">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px; color: #52645d;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  <%= @household.trash_pickup.presence || "Every Thursday 7:00 AM" %>
+                </span>
+              </div>
+            </div>
+
+            <!-- LANDLORD HOTLINE -->
+            <div class="vault-info-item">
+              <span class="vault-info-label">Landlord / Maintenance Hotline</span>
+              <div class="vault-info-value-row">
+                <span class="vault-info-text">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px; color: #245a47;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  <a href="tel:<%= (@household.landlord_hotline.presence || '(979) 555-0142').gsub(/[^0-9+]/, '') %>" class="vault-phone-link">
+                    <%= @household.landlord_hotline.presence || "(979) 555-0142" %>
+                  </a>
+                </span>
+                <button type="button" class="vault-action-btn" onclick="copyToClipboard('<%= @household.landlord_hotline.presence || '(979) 555-0142' %>', this)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="vault-card-footer">
+          <% if @household.admin?(current_user) %>
+            <span>Admin Control: You have permission to edit vault details</span>
+            <button type="button" class="vault-action-btn" onclick="document.getElementById('vault-edit-dialog').showModal()">
+              Edit details &rarr;
+            </button>
+          <% else %>
+            <span>Managed by household admins · Contact an admin to update</span>
+          <% end %>
+        </div>
+      </section>
+
+      <!-- CARD 2: HOUSE RULES & ACTIVE POLLS -->
+      <section class="vault-card" aria-labelledby="polls-heading">
+        <div>
+          <div class="vault-card-header">
+            <div class="vault-card-title-wrap">
+              <span class="vault-card-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+              </span>
+              <h2 id="polls-heading">House Rules &amp; Active Polls</h2>
+            </div>
+            <span class="rules-status-badge <%= @open_proposals.any? ? 'rules-status-voting' : 'rules-status-approved' %>">
+              <%= @approved_rules.size %> Approved, <%= @open_proposals.size %> Pending
+            </span>
+          </div>
+
+          <div class="vault-rule-preview-list">
+            <% if @open_proposals.any? %>
+              <% top_proposal = @open_proposals.first %>
+              <div class="vault-rule-preview-item is-pending">
+                <div class="vault-rule-preview-top">
+                  <span class="vault-rule-preview-title"><%= top_proposal.title %></span>
+                  <span class="rules-status-badge rules-status-voting">Voting Active</span>
+                </div>
+                <p style="font-size: 0.85rem; color: #52645d; margin: 0;"><%= truncate(top_proposal.description, length: 90) %></p>
+                <div class="vault-rule-preview-actions">
+                  <span><strong><%= top_proposal.approve_votes_count %> Approved</strong>, <%= top_proposal.reject_votes_count %> Rejected</span>
+                  <% if top_proposal.voted_by?(current_user) %>
+                    <span style="font-weight: 600; color: #245a47;">Voted: <%= top_proposal.vote_by(current_user).decision.capitalize %></span>
+                  <% else %>
+                    <div class="vote-actions-group">
+                      <%= button_to "Agree", vote_household_rule_path(@household, top_proposal), method: :post, params: { decision: "approve" }, class: "button-vote-approve", style: "padding: 0.25rem 0.65rem; font-size: 0.78rem;" %>
+                      <%= button_to "Disagree", vote_household_rule_path(@household, top_proposal), method: :post, params: { decision: "reject" }, class: "button-vote-reject", style: "padding: 0.25rem 0.65rem; font-size: 0.78rem;" %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+
+            <% if @approved_rules.any? %>
+              <% @approved_rules.first(2).each do |rule| %>
+                <div class="vault-rule-preview-item is-enacted">
+                  <div class="vault-rule-preview-top">
+                    <span class="vault-rule-preview-title"><%= rule.title %></span>
+                    <span class="rules-status-badge rules-status-approved">Enacted</span>
+                  </div>
+                  <p style="font-size: 0.85rem; color: #1c332e; margin: 0;"><%= truncate(rule.description, length: 100) %></p>
+                </div>
+              <% end %>
+            <% else %>
+              <p style="color: #63756e; font-size: 0.9rem; margin: 0.5rem 0;">No house rules enacted yet. Propose your first rule below!</p>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="vault-card-footer">
+          <span>Democratic majority voting in effect</span>
+          <a href="#approved-rules-heading" style="color: #245a47; font-weight: 600; text-decoration: none;">View all rules &amp; proposals &darr;</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- ====================================================================
+         SECTION 2: PROPERTY & LOCATION DETAILS (REPLACING CALENDAR)
+         ==================================================================== -->
+    <section class="vault-property-section" aria-labelledby="property-heading">
+      <div class="vault-card-header" style="margin-bottom: 0;">
+        <div class="vault-card-title-wrap">
+          <span class="vault-card-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </span>
+          <h2 id="property-heading">Property &amp; Location Details</h2>
+        </div>
+        <% if @household.admin?(current_user) %>
+          <button type="button" class="vault-action-btn" onclick="document.getElementById('vault-edit-dialog').showModal()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit Address &amp; Map
+          </button>
+        <% end %>
       </div>
-      <div class="dashboard-member-count">
-        <strong><%= @approved_rules.size %></strong>
-        <span><%= "active rule".pluralize(@approved_rules.size) %></span>
+
+      <div class="vault-property-grid">
+        <!-- LEFT: HOUSE DETAILS & MAILING ADDRESS -->
+        <div class="vault-address-card">
+          <div>
+            <span class="vault-info-label">Apartment / Residence Name</span>
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: #1c332e; margin: 0.3rem 0 1rem;">
+              <%= @household.apartment_name.presence || @household.name %>
+            </h3>
+
+            <span class="vault-info-label">Official Mailing Address</span>
+            <div style="margin-top: 0.35rem; padding: 0.75rem; background: #ffffff; border: 1px solid #d5ded6; border-radius: 0.5rem;">
+              <pre class="vault-address-block" id="vault-address-text"><%= @household.mailing_address.presence || "1124 Texas Ave S\nCollege Station, TX 77840" %></pre>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="dashboard-button dashboard-button-secondary" onclick="copyToClipboard(document.getElementById('vault-address-text').textContent, this)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>Copy Mailing Address</span>
+            </button>
+            <span style="font-size: 0.8rem; color: #63756e;">Use for packages &amp; mail delivery</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: MAP PREVIEW & LINKS -->
+        <div class="vault-map-container">
+          <div class="vault-map-placeholder">
+            <div class="vault-map-grid-pattern" aria-hidden="true"></div>
+            <div class="vault-map-pin-badge" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <strong style="color: #1c332e; font-size: 1rem; z-index: 1;">
+              <%= @household.apartment_name.presence || @household.name %> Location
+            </strong>
+            <p style="font-size: 0.84rem; color: #52645d; margin: 0.25rem 0 0.75rem; z-index: 1;">
+              <%= (@household.mailing_address.presence || "1124 Texas Ave S, College Station, TX 77840").split("\n").first %>
+            </p>
+
+            <div class="vault-map-links-bar">
+              <% query = ERB::Util.url_encode(@household.mailing_address.presence || "#{@household.name}, College Station, TX") %>
+              <% google_url = @household.map_link.presence || "https://www.google.com/maps/search/?api=1&query=#{query}" %>
+              <% apple_url = "https://maps.apple.com/?q=#{query}" %>
+
+              <a href="<%= google_url %>" target="_blank" rel="noopener noreferrer" class="vault-action-btn" style="background: #ffffff; padding: 0.4rem 0.85rem; font-size: 0.84rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                Google Maps &nearr;
+              </a>
+              <a href="<%= apple_url %>" target="_blank" rel="noopener noreferrer" class="vault-action-btn" style="background: #ffffff; padding: 0.4rem 0.85rem; font-size: 0.84rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                Apple Maps &nearr;
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- SECTION 1: APPROVED RULES -->
+    <!-- ====================================================================
+         SECTION 3: APPROVED HOUSE RULES (FULL REPOSITORY)
+         ==================================================================== -->
     <div class="dashboard-section-heading">
       <h2 id="approved-rules-heading">Approved House Rules</h2>
       <p><%= pluralize(@approved_rules.size, "active agreement") %></p>
@@ -78,7 +305,9 @@
       </div>
     <% end %>
 
-    <!-- SECTION 2: ACTIVE PROPOSALS & VOTING -->
+    <!-- ====================================================================
+         SECTION 4: ACTIVE PROPOSALS & VOTING
+         ==================================================================== -->
     <div class="dashboard-section-heading">
       <h2 id="proposals-heading">Active Proposals &amp; Voting</h2>
       <p><%= pluralize(@open_proposals.size, "proposal") %> open for voting</p>
@@ -150,31 +379,127 @@
       </div>
     <% end %>
 
-    <!-- SECTION 3: PAST PROPOSALS -->
+    <!-- ====================================================================
+         SECTION 5: PAST PROPOSALS
+         ==================================================================== -->
     <% if @past_proposals.any? %>
       <div class="dashboard-section-heading">
-        <h2 id="past-heading">Past Proposals</h2>
-        <p>Concluded voting history</p>
+        <h2 id="past-proposals-heading">Past Proposals</h2>
+        <p>Decided or archived proposals</p>
       </div>
-      <section class="dashboard-card" style="background: #fff; margin-bottom: 2rem;">
-        <ul style="padding-left: 1.25rem; margin: 0; line-height: 1.8;">
-          <% @past_proposals.each do |past| %>
-            <li>
-              <strong><%= past.title %></strong> (<%= past.category %>) —
-              <span class="rules-status-badge <%= past.status == 'rejected' ? 'rules-status-rejected' : 'rules-status-approved' %>" style="margin: 0 0.3rem;">
+
+      <div class="dashboard-grid" style="margin-bottom: 2.5rem;">
+        <% @past_proposals.each do |past| %>
+          <section class="dashboard-card" id="past-proposal-<%= past.id %>" style="opacity: 0.85;">
+            <div class="dashboard-card-top">
+              <span class="rules-category-tag"><%= past.category %></span>
+              <span class="rules-status-badge <%= past.status == 'approved' ? 'rules-status-approved' : 'rules-status-rejected' %>">
                 <%= past.status.capitalize %>
               </span>
-              on <%= past.updated_at.strftime("%B %d, %Y") %>
-              <small style="color: var(--dashboard-muted);">(Final vote: <%= past.approve_votes_count %> Approve, <%= past.reject_votes_count %> Reject)</small>
-            </li>
-          <% end %>
-        </ul>
-      </section>
+            </div>
+
+            <h2><%= past.title %></h2>
+            <p style="font-size: 0.85rem; color: var(--dashboard-muted);">
+              Proposed by <%= past.created_by.name %> · Concluded with <%= past.approve_votes_count %> Approve / <%= past.reject_votes_count %> Reject
+            </p>
+            <div class="rule-card-description">
+              <%= past.description %>
+            </div>
+          </section>
+        <% end %>
+      </div>
     <% end %>
 
-    <footer class="dashboard-footer">
-      <%= link_to "← Back to Dashboard", household_dashboard_path(@household) %> ·
-      <span>Roommate OS</span>
-    </footer>
+    <!-- ====================================================================
+         ADMIN VAULT & PROPERTY EDIT DIALOG (MODAL)
+         ==================================================================== -->
+    <% if @household.admin?(current_user) %>
+      <dialog id="vault-edit-dialog" class="vault-dialog">
+        <div class="vault-dialog-content">
+          <div class="vault-dialog-header">
+            <h3>Edit Household Info &amp; Vault</h3>
+            <button type="button" class="vault-dialog-close" onclick="document.getElementById('vault-edit-dialog').close()" aria-label="Close dialog">&times;</button>
+          </div>
+
+          <%= form_with model: @household, url: vault_household_rules_path(@household), method: :patch, local: true, class: "dashboard-form" do |f| %>
+            <div class="dashboard-form-field">
+              <%= f.label :apartment_name, "Apartment / Complex Name" %>
+              <%= f.text_field :apartment_name, placeholder: "e.g. Sunset Palms Apt 4B", value: @household.apartment_name %>
+            </div>
+
+            <div class="dashboard-form-field">
+              <%= f.label :wifi_ssid, "Wi-Fi Network Name (SSID)" %>
+              <%= f.text_field :wifi_ssid, placeholder: "e.g. SunsetPalms_5G", value: @household.wifi_ssid %>
+            </div>
+
+            <div class="dashboard-form-field">
+              <%= f.label :wifi_password, "Wi-Fi Password" %>
+              <%= f.text_field :wifi_password, placeholder: "e.g. SuperSecretPassword123", value: @household.wifi_password %>
+            </div>
+
+            <div class="dashboard-form-field">
+              <%= f.label :trash_pickup, "Trash & Recycling Pickup Schedule" %>
+              <%= f.text_field :trash_pickup, placeholder: "e.g. Every Thursday 7:00 AM", value: @household.trash_pickup %>
+            </div>
+
+            <div class="dashboard-form-field">
+              <%= f.label :landlord_hotline, "Landlord / Maintenance Hotline" %>
+              <%= f.text_field :landlord_hotline, placeholder: "e.g. (979) 555-0142", value: @household.landlord_hotline %>
+            </div>
+
+            <div class="dashboard-form-field">
+              <%= f.label :mailing_address, "Full Mailing Address" %>
+              <%= f.text_area :mailing_address, rows: 3, placeholder: "1124 Texas Ave S\nApt 4B\nCollege Station, TX 77840", value: @household.mailing_address %>
+            </div>
+
+            <div class="dashboard-form-field">
+              <%= f.label :map_link, "Google / Apple Maps Link (Optional)" %>
+              <%= f.text_field :map_link, placeholder: "https://maps.google.com/?q=...", value: @household.map_link %>
+              <span class="dashboard-form-hint">Leave blank to use the automatic map search with your mailing address.</span>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+              <button type="button" class="dashboard-button dashboard-button-secondary" onclick="document.getElementById('vault-edit-dialog').close()">Cancel</button>
+              <%= f.submit "Save Vault Details", class: "dashboard-button" %>
+            </div>
+          <% end %>
+        </div>
+      </dialog>
+    <% end %>
+
+    <footer class="dashboard-footer">Roommate OS <span aria-hidden="true">/</span> A shared space for your household</footer>
   </main>
 </div>
+
+<!-- CLIENT JAVASCRIPT FOR VAULT INTERACTIONS -->
+<script>
+  function togglePasswordVisibility() {
+    const display = document.getElementById("vault-wifi-password-display");
+    const raw = document.getElementById("vault-wifi-password-raw");
+    const label = document.getElementById("vault-pwd-toggle-label");
+    if (!display || !raw || !label) return;
+
+    if (display.textContent === "••••••••") {
+      display.textContent = raw.textContent;
+      label.textContent = "Hide";
+    } else {
+      display.textContent = "••••••••";
+      label.textContent = "Show";
+    }
+  }
+
+  function copyToClipboard(text, btn) {
+    if (!text) return;
+    navigator.clipboard.writeText(text.trim()).then(() => {
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span>Copied!</span>`;
+      btn.style.color = "#245a47";
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.color = "";
+      }, 2000);
+    }).catch(err => {
+      console.error("Could not copy text: ", err);
+    });
+  }
+</script>

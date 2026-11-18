@@ -36,7 +36,7 @@ RSpec.describe "Household dashboard", type: :request do
       "Chores"               => "Household chores",
       "Bills & balances"     => "Settled up",
       "Inventory alerts"     => "All stocked",
-      "House rules & voting" => "Not available yet"
+      "House Hub"            => "All clear"
     )
 
     unavailable = cards.reject { |c| c.at_css("h2").text.strip == "Bills & balances" }

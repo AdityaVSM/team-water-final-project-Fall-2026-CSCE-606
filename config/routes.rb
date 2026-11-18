@@ -60,6 +60,9 @@ Rails.application.routes.draw do
     end
 
     resources :rules do
+      collection do
+        patch :vault, to: "rules#update_vault"
+      end
       member do
         post :vote
         get :amend
@@ -67,6 +70,7 @@ Rails.application.routes.draw do
         get :history
       end
     end
+    get "house_hub", to: "rules#index", as: :house_hub
   end
 
   get "/join-household",

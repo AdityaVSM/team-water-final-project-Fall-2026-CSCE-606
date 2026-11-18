@@ -171,3 +171,356 @@
   border-bottom: 1px solid #edf0e9;
   padding-bottom: 0.4rem;
 }
+
+/* ==========================================================================
+   HOUSE HUB: HOUSEHOLD INFO & VAULT, PROPERTY, AND MAPS
+   ========================================================================== */
+
+.vault-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.vault-card {
+  background: #ffffff;
+  border: 1px solid var(--dashboard-line, #d5ded6);
+  border-radius: 0.85rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  position: relative;
+}
+
+.vault-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid #edf2ec;
+}
+
+.vault-card-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.vault-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.6rem;
+  background: #e3ecdd;
+  color: #245a47;
+  flex-shrink: 0;
+}
+
+.vault-card-header h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1c332e;
+  margin: 0;
+}
+
+.vault-badge-secure {
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: #245a47;
+  background: #e3ecdd;
+  border: 1px solid #c7d9c0;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.vault-info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.vault-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.vault-info-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #52645d;
+}
+
+.vault-info-value-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8faf7;
+  border: 1px solid #e2e8df;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.85rem;
+}
+
+.vault-info-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1c332e;
+  word-break: break-word;
+}
+
+.vault-phone-link {
+  color: #245a47;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.vault-phone-link:hover {
+  text-decoration: underline;
+}
+
+.vault-action-btn {
+  background: transparent;
+  border: 1px solid #c8d3c5;
+  border-radius: 0.35rem;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #245a47;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.15s ease;
+}
+
+.vault-action-btn:hover {
+  background: #eaf1e7;
+  border-color: #245a47;
+}
+
+.vault-card-footer {
+  margin-top: 1.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #edf2ec;
+  font-size: 0.8rem;
+  color: #63756e;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Quick Polls and Enacted previews */
+.vault-rule-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.vault-rule-preview-item {
+  border: 1px solid #e3e8df;
+  border-radius: 0.6rem;
+  padding: 0.85rem 1rem;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vault-rule-preview-item.is-enacted {
+  background: #fafcf9;
+  border-left: 3px solid #245a47;
+}
+
+.vault-rule-preview-item.is-pending {
+  background: #fffdf9;
+  border-left: 3px solid #c87a3b;
+}
+
+.vault-rule-preview-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.vault-rule-preview-title {
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: #1c332e;
+}
+
+.vault-rule-preview-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: #63756e;
+  margin-top: 0.25rem;
+}
+
+/* Property & Map Section */
+.vault-property-section {
+  background: #ffffff;
+  border: 1px solid var(--dashboard-line, #d5ded6);
+  border-radius: 0.85rem;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.vault-property-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.25rem;
+}
+
+.vault-address-card {
+  background: #f8faf7;
+  border: 1px solid #e2e8df;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.vault-address-block {
+  font-family: inherit;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  font-weight: 600;
+  color: #1c332e;
+  margin: 0;
+  white-space: pre-line;
+}
+
+.vault-map-container {
+  border: 1px solid #d5ded6;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: #f1f5ee;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 220px;
+}
+
+.vault-map-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+  background: linear-gradient(135deg, #eef4eb 0%, #e1ebe0 100%);
+  position: relative;
+}
+
+.vault-map-grid-pattern {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  opacity: 0.35;
+  background-image: 
+    linear-gradient(#245a47 1px, transparent 1px),
+    linear-gradient(to right, #245a47 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+.vault-map-pin-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: #245a47;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(36, 90, 71, 0.35);
+  margin-bottom: 0.75rem;
+  z-index: 1;
+}
+
+.vault-map-links-bar {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.85rem;
+  z-index: 1;
+}
+
+/* Modal Dialog for Admin Vault Edit */
+.vault-dialog {
+  border: none;
+  border-radius: 0.85rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  max-width: 620px;
+  width: 90vw;
+  background: #ffffff;
+}
+
+.vault-dialog::backdrop {
+  background: rgba(18, 33, 27, 0.6);
+  backdrop-filter: blur(2px);
+}
+
+.vault-dialog-content {
+  padding: 1.75rem;
+}
+
+.vault-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #edf2ec;
+}
+
+.vault-dialog-header h3 {
+  font-size: 1.25rem;
+  font-weight: 750;
+  color: #1c332e;
+  margin: 0;
+}
+
+.vault-dialog-close {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  color: #52645d;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.3rem;
+}
+
+.vault-dialog-close:hover {
+  background: #f0f4ee;
+  color: #1c332e;
+}
+
+@media (max-width: 800px) {
+  .vault-property-grid {
+    grid-template-columns: 1fr;
+  }
+}

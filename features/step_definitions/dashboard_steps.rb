@@ -14,12 +14,12 @@ Then("only the unbuilt dashboard summaries should be marked unavailable") do
   statuses = cards.to_h { |c| [ c.at_css("h2").text.strip, c.at_css(".dashboard-status").text.squish ] }
 
   expect(statuses.keys).to eq(
-    [ "Chores", "Bills & balances", "Inventory alerts", "House rules & voting" ]
+    [ "Chores", "Bills & balances", "Inventory alerts", "House Hub" ]
   )
   expect(statuses).to include(
-    "Chores"               => "Household chores",
-    "Inventory alerts"     => "All stocked",
-    "House rules & voting" => "Not available yet"
+    "Chores"           => "Household chores",
+    "Inventory alerts" => "All stocked",
+    "House Hub"        => "All clear"
   )
 
   unavailable = cards.reject { |c| c.at_css("h2").text.strip == "Bills & balances" }

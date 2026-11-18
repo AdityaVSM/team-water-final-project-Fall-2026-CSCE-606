@@ -63,14 +63,14 @@
       <li>
         <%= link_to household_rules_path(@household),
                     class: "dashboard-sidebar-link #{'is-active' if controller_name == 'rules'}",
-                    data: { tooltip: "House Rules & Voting" } do %>
+                    data: { tooltip: "House Hub" } do %>
           <svg class="dashboard-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
             <polyline points="14 2 14 8 20 8"/>
             <line x1="16" y1="13" x2="8" y2="13"/>
             <line x1="16" y1="17" x2="8" y2="17"/>
           </svg>
-          <span>House Rules</span>
+          <span>House Hub</span>
         <% end %>
       </li>
     <% else %>
@@ -185,7 +185,7 @@
         <%= link_to "Dashboard", household_dashboard_path(@household), class: "dashboard-tab-link #{'is-active' if controller_name == 'dashboards'}" %>
         <%= link_to "Chores", household_chores_path(@household), class: "dashboard-tab-link #{'is-active' if controller_name == 'chores'}" %>
         <%= link_to "Expenses", household_expenses_path(@household), class: "dashboard-tab-link #{'is-active' if controller_name == 'expenses'}" %>
-        <%= link_to "Rules", household_rules_path(@household), class: "dashboard-tab-link #{'is-active' if controller_name == 'rules'}" %>
+        <%= link_to "House Hub", household_rules_path(@household), class: "dashboard-tab-link #{'is-active' if controller_name == 'rules'}" %>
       </div>
     <% end %>
 
