@@ -112,7 +112,7 @@ RSpec.describe "Home", type: :request do
       expect(loading_overlay.attribute("hidden")).not_to be_nil
       expect(loading_overlay["role"]).to eq("status")
       expect(loading_overlay.text).to include("Updating calendar")
-      expect(loading_overlay).to have_css(".dashboard-calendar-spinner")
+      expect(loading_overlay.at_css(".dashboard-calendar-spinner")).not_to be_nil
       expect(filters.css('input[type="submit"], button[type="submit"]')).to be_empty
       expense_link = Nokogiri::HTML(response.body).at_css("a[href='#{household_expense_path(households.first, expense)}']")
       expect(expense_link.text).to eq("November utilities")
