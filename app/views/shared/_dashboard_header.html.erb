@@ -141,21 +141,12 @@
   <!-- UNIVERSAL TOPBAR HEADER -->
   <header class="dashboard-header">
     <div class="dashboard-header-brand-wrap">
-      <button type="button" class="dashboard-menu-toggle-btn" id="header-menu-toggle" data-action="sidebar#toggle" aria-label="Toggle navigation menu" title="Toggle navigation menu">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="3" y1="12" x2="21" y2="12"/>
-        <line x1="3" y1="6" x2="21" y2="6"/>
-        <line x1="3" y1="18" x2="21" y2="18"/>
-      </svg>
-      <span>Menu</span>
-    </button>
+      <div class="dashboard-brand" aria-label="Roommate OS">
+        <span class="dashboard-brand-mark" aria-hidden="true">R</span>
+        Roommate OS
+      </div>
 
-    <%= link_to root_path, class: "dashboard-brand" do %>
-      <span class="dashboard-brand-mark" aria-hidden="true">R</span>
-      Roommate OS
-    <% end %>
-
-    <% if defined?(@household) && @household.present? && @household.persisted? %>
+      <% if defined?(@household) && @household.present? && @household.persisted? %>
       <details class="dashboard-household-dropdown" id="household-dropdown">
         <summary class="dashboard-household-pill" aria-label="Switch household" role="button" title="Switch household">
           <span class="dashboard-household-name"><%= @household.name %></span>
