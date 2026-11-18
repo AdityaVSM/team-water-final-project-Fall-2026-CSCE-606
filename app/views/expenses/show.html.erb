@@ -40,6 +40,22 @@
       <% end %>
       <div><dt>Paid by</dt><dd><%= @expense.created_by.name %></dd></div>
       <div><dt>Added</dt><dd><%= @expense.created_at.strftime("%m/%d/%Y %l:%M %p") %></dd></div>
+
+      <% if @expense.recurring? %>
+        <div>
+          <dt>Repeats</dt>
+          <dd>
+            <%= @expense.recurrence_label %>
+            <% if @expense.recurrence_next_on %>· next bill on <%= @expense.recurrence_next_on.strftime("%m/%d/%Y") %><% end %>
+          </dd>
+        </div>
+      <% elsif @expense.recurring_parent %>
+        <div>
+          <dt>Recurring</dt>
+          <dd>Created from <%= link_to @expense.recurring_parent.title, household_expense_path(@household, @expense.recurring_parent) %></dd>
+        </div>
+      <% end %>
+
       <div class="dashboard-detail-wide">
         <dt>Description</dt>
         <dd><%= @expense.description.presence || "No description" %></dd>
@@ -79,7 +95,7 @@
                 </td>
                 <td><%= participant.paid_at ? participant.paid_at.strftime("%m/%d/%Y") : "-" %></td>
                 <td>
-                  <% if participant.user == current_user && participant.user_id != @expense.created_by_id && participant.payment_status != "paid" %>
+                  <% if participant.user == current_user && participant.payment_status != "paid" %>
                     <%= button_to "Mark as Paid",
                           mark_paid_household_expense_path(@household, @expense),
                           method: :patch,

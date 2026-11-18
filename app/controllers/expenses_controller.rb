@@ -3,6 +3,7 @@ class ExpensesController < ApplicationController
   before_action :require_login
   before_action :set_household
   before_action :check_membership
+  before_action :generate_recurring, only: [:index, :show]
   before_action :set_expense, only: [ :edit, :update, :destroy ]
   before_action :require_creator, only: [ :edit, :update, :destroy ]
 
@@ -10,6 +11,7 @@ class ExpensesController < ApplicationController
     @expenses = @household.expenses
                           .includes(:created_by, :expense_participants)
                           .order(expense_date: :desc, created_at: :desc)
+    @expense = @household.expenses.build
   end
 
   def new
@@ -28,6 +30,10 @@ class ExpensesController < ApplicationController
     end
 
     if success
+      HouseholdNotificationDispatcher.expense_created(
+        expense: @expense,
+        actor: current_user
+      )
       redirect_to household_expense_path(@household, @expense), notice: "Expense was successfully created."
     else
       render :new, status: :unprocessable_entity
@@ -82,6 +88,10 @@ class ExpensesController < ApplicationController
 
   private
 
+  def generate_recurring
+    Expense.generate_recurring(@household.expenses)
+  end
+
   def update_shares
     if split_type == "keep"
       !@expense.amount_changed? || @expense.rescale_shares
@@ -108,11 +118,14 @@ class ExpensesController < ApplicationController
   def check_membership
     unless @household.users.include?(current_user)
       redirect_to root_path, alert: "You are not a member of this household"
+      return
     end
+
+    session[:current_household_id] = @household.id if @household.persisted?
   end
 
   def expense_params
-    params.require(:expense).permit(:title, :description, :amount, :expense_date, :due_date)
+    params.require(:expense).permit(:title, :description, :amount, :expense_date, :due_date, :recurrence)
   end
 
   def calendar_date

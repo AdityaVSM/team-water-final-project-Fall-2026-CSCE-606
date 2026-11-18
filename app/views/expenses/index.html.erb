@@ -6,7 +6,9 @@
       <h1>Expenses</h1>
       <p class="dashboard-subtitle">Everything your household has shared, newest first.</p>
     </div>
-    <%= link_to "Add expense", new_household_expense_path(@household), class: "dashboard-button" %>
+
+    <%= link_to "Back to dashboard", household_dashboard_path(@household),
+                  class: "dashboard-button dashboard-button-secondary" %>
   </div>
 
   <section class="dashboard-panel" aria-labelledby="expense-list-heading">
@@ -29,7 +31,10 @@
             <% @expenses.each do |expense| %>
               <% share = expense.expense_participants.find { |p| p.user_id == current_user.id } %>
               <tr>
-                <td><%= link_to expense.title, household_expense_path(@household, expense) %></td>
+                <td>
+                  <%= link_to expense.title, household_expense_path(@household, expense) %>
+                  <% if expense.recurring? %><span class="dashboard-status"><%= expense.recurrence_label %></span><% end %> 
+                </td>
                 <td class="is-numeric">$<%= number_with_precision(expense.amount, precision: 2) %></td>
                 <td><%= expense.created_by.name %></td>
                 <td><%= expense.expense_date.strftime("%m/%d/%Y") %></td>
@@ -52,7 +57,12 @@
         </table>
       </div>
     <% else %>
-      <p class="dashboard-chore-empty">No expenses yet. <%= link_to "Add the first one", new_household_expense_path(@household) %>.</p>
+      <p class="dashboard-chore-empty">No expenses yet. Add the first one below.</p>
     <% end %>
+  </section>
+
+  <section class="dashboard-chores-page dashboard-chore-create" aria-labelledby="create-expense-heading" style="margin-top: 2rem;">
+    <h2 id="create-expense-heading">Add an expense</h2>
+    <%= render "form", expense: @expense, editing: false, submit_label: "Create Expense" %>
   </section>
 <% end %>

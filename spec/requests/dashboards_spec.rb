@@ -4,7 +4,7 @@ RSpec.describe "Household dashboard", type: :request do
   let!(:user) { User.create!(name: "Bhaumik", email: "dashboard@example.com", password: "password123") }
   let!(:household) { Household.create!(name: "Water House", creator: user) }
 
-  before { household.household_memberships.create!(user: user) }
+  before { household.household_memberships.create!(user: user, role: "admin") }
 
   def login
     post login_path, params: { email: user.email, password: "password123" }
@@ -52,6 +52,7 @@ RSpec.describe "Household dashboard", type: :request do
     expect(links).to include(
       household_path(household),
       household_chores_path(household),
+      household_rules_path(household),
       root_path,
       households_path
     )
@@ -377,7 +378,7 @@ RSpec.describe "Household dashboard", type: :request do
     login
     get root_path
 
-    expect(response.body).to include("Create or join your first household")
+    expect(response.body).to include("Create a New Household")
     expect(response.body).to include("href=\"#{new_household_path}\"", "href=\"#{join_household_path}\"")
   end
 
@@ -461,12 +462,13 @@ RSpec.describe "Household dashboard", type: :request do
     end
 
     it "links to the expense pages and escapes expense titles" do
-      create_expense(title: "<script>alert('x')</script>", amount: 60, paid_by: roommate)
+      expense = create_expense(title: "<script>alert('x')</script>", amount: 60, paid_by: roommate)
       login
       get household_dashboard_path(household)
 
       hrefs = Nokogiri::HTML(response.body).css("a").map { |a| a["href"] }
-      expect(hrefs).to include(new_household_expense_path(household), household_expenses_path(household))
+      expect(hrefs).to include(household_expense_path(household, expense), household_expenses_path(household))
+      expect(hrefs).not_to include(new_household_expense_path(household))
       expect(response.body).to include("&lt;script&gt;")
       expect(response.body).not_to include("<script>alert('x')</script>")
     end

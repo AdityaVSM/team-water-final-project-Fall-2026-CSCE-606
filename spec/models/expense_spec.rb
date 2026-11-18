@@ -268,4 +268,58 @@ RSpec.describe Expense, type: :model do
       expect(Expense.due_by(5)).not_to include(later, none)
     end
   end
+
+  describe 'recurring expenses' do
+    def recurring(**attrs)
+      Expense.create!({ household: household, title: "Rent", amount: 90, created_by: creator,
+                        expense_date: Date.new(2026, 1, 15), due_date: Date.new(2026, 1, 15),
+                        recurrence: "monthly" }.merge(attrs)).tap(&:split_equally)
+    end
+
+    it 'requires a due date and a known frequency' do
+      expect(recurring_attempt = Expense.new(household: household, title: "R", amount: 10, created_by: creator,
+                                            expense_date: Date.current, recurrence: "monthly")).not_to be_valid
+      expect(Expense.new(household: household, title: "R", amount: 10, created_by: creator,
+                        expense_date: Date.current, due_date: Date.current, recurrence: "daily")).not_to be_valid
+    end
+
+    it 'creates a bill inside the lead window with the same split, then does not repeat it' do
+      expense = recurring
+      expect(expense.recurrence_next_on).to eq(Date.new(2026, 2, 15))
+
+      travel_to Date.new(2026, 2, 10) do
+        expect { expense.generate_due_occurrences! }.to change(Expense, :count).by(1)
+        expect { expense.generate_due_occurrences! }.not_to change(Expense, :count)
+      end
+
+      copy = expense.occurrences.first
+      expect(copy.due_date).to eq(Date.new(2026, 2, 15))
+      expect(copy.recurrence).to be_nil
+      expect(copy.expense_participants.pluck(:amount_owed)).to all(eq(30))
+      expect(copy.expense_participants.pluck(:payment_status)).to all(eq("pending"))
+      expect(expense.reload.recurrence_next_on).to eq(Date.new(2026, 3, 15))
+    end
+
+    it 'does not create a bill that is not due soon' do
+      expense = recurring
+      travel_to(Date.new(2026, 1, 20)) { expect(expense.generate_due_occurrences!).to eq(0) }
+    end
+
+    it 'keeps the day of month after a short month' do
+      expense = recurring(due_date: Date.new(2026, 1, 31), expense_date: Date.new(2026, 1, 31))
+
+      travel_to(Date.new(2026, 3, 25)) { expense.generate_due_occurrences! }
+
+      expect(expense.occurrences.order(:due_date).pluck(:due_date))
+        .to eq([Date.new(2026, 2, 28), Date.new(2026, 3, 31)])
+    end
+
+    it 'stops creating bills when repeating is turned off' do
+      expense = recurring
+      expense.update!(recurrence: "")
+
+      expect(expense.reload.recurrence).to be_nil
+      expect(expense.recurrence_next_on).to be_nil
+    end
+  end
 end
