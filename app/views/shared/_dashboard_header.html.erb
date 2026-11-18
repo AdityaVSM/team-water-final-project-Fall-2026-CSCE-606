@@ -152,7 +152,7 @@
     <% if defined?(@household) && @household.present? && @household.persisted? %>
       <details class="dashboard-household-dropdown" id="household-dropdown">
         <summary class="dashboard-household-pill" aria-label="Switch household" role="button" title="Switch household">
-          <span><%= @household.name %></span>
+          <span class="dashboard-household-name"><%= @household.name %></span>
           <svg class="dashboard-dropdown-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </summary>
         <div class="dashboard-dropdown-menu">

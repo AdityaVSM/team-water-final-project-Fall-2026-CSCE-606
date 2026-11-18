@@ -200,6 +200,8 @@
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s ease;
 }
 
@@ -216,6 +218,7 @@
   text-decoration: none;
   white-space: nowrap;
   color: #245a47 !important;
+  flex-shrink: 0;
 }
 
 .dashboard-brand-mark {
@@ -226,11 +229,13 @@
   background: #245a47;
   color: #fff;
   border-radius: 0.65rem;
+  flex-shrink: 0;
 }
 
 .dashboard-household-dropdown {
   position: relative;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .dashboard-household-dropdown summary {
@@ -255,7 +260,19 @@
   font-weight: 600;
   color: var(--dashboard-ink) !important;
   text-decoration: none !important;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s ease;
+}
+
+.dashboard-household-pill span,
+.dashboard-household-name {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
+  vertical-align: middle;
 }
 
 .dashboard-household-pill:hover,
@@ -316,6 +333,12 @@
   font-size: 0.88rem;
   font-weight: 550;
   transition: all 0.12s ease;
+}
+
+.dashboard-dropdown-item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dashboard-dropdown-item:hover {
@@ -720,6 +743,29 @@
     display: inline !important;
   }
   .dashboard-header { padding-left: 1.25rem; }
+  .dashboard-header-brand-wrap {
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  .dashboard-menu-toggle-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .dashboard-household-pill {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .dashboard-household-pill span,
+  .dashboard-household-name {
+    max-width: 130px;
+  }
+  .dashboard-dropdown-menu {
+    left: auto;
+    right: 0;
+    min-width: 220px;
+    max-width: calc(100vw - 2rem);
+    box-sizing: border-box;
+  }
   .dashboard-main { padding-left: 1.25rem; }
   .dashboard-quick-tabs { display: none; }
 }
