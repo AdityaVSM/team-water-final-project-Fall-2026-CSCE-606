@@ -24,6 +24,23 @@
       </p>
     </div>
 
+    <section class="notification-card" style="margin-bottom: 2rem;" aria-labelledby="profile-avatar-title">
+      <div class="notification-card-header">
+        <div>
+          <h2 id="profile-avatar-title">Profile Avatar</h2>
+          <p>Customize your roommate avatar across Roommate OS.</p>
+        </div>
+        <div>
+          <%= user_avatar_tag(current_user, size: :lg) %>
+        </div>
+      </div>
+      <div style="margin-top: 1rem;">
+        <button type="button" class="dashboard-button" onclick="document.getElementById('avatar-picker-dialog').showModal()">
+          Change Avatar &rarr;
+        </button>
+      </div>
+    </section>
+
     <section class="notification-card"
              aria-labelledby="notification-settings-title">
 
@@ -113,4 +130,5 @@
       <%= link_to "← Back to Dashboard", root_path %>
     </div>
   </main>
+  <%= render "shared/avatar_picker_modal" if current_user %>
 </div>

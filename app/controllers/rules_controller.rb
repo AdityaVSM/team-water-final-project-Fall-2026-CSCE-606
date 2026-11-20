@@ -88,7 +88,32 @@ class RulesController < ApplicationController
     @revisions = @rule.rule_revisions.order(version: :desc)
   end
 
+  def update_vault
+    unless @household.admin?(current_user)
+      redirect_to household_rules_path(@household), alert: "Only household admins can update household info and vault details."
+      return
+    end
+
+    if @household.update(vault_params)
+      redirect_to household_rules_path(@household), notice: "Household info & vault updated successfully."
+    else
+      redirect_to household_rules_path(@household), alert: @household.errors.full_messages.to_sentence
+    end
+  end
+
   private
+
+  def vault_params
+    params.require(:household).permit(
+      :wifi_ssid,
+      :wifi_password,
+      :trash_pickup,
+      :landlord_hotline,
+      :apartment_name,
+      :mailing_address,
+      :map_link
+    )
+  end
 
   def set_household
     @household = Household.find(params[:household_id])

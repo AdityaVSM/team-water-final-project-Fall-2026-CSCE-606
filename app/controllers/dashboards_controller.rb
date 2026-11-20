@@ -47,5 +47,9 @@ class DashboardsController < ApplicationController
     low_stock = @household.inventory_items.low_stock
     @low_stock_count = low_stock.count
     @low_stock_items = low_stock.order(updated_at: :desc, name: :asc).limit(5)
+
+    @active_rules_count = @household.rules.active_agreements.count
+    @open_proposals_count = @household.rules.proposed.count
+    @pending_user_votes_count = @household.rules.proposed.reject { |r| r.voted_by?(current_user) }.size
   end
 end

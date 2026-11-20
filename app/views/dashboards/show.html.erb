@@ -54,13 +54,13 @@
 
       <%= link_to household_rules_path(@household),
                   class: "dashboard-stat-chip dashboard-stat-chip-link",
-                  title: "Open House Rules & Voting" do %>
+                  title: "Open House Hub" do %>
         <div class="dashboard-stat-icon dashboard-stat-icon--rules">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         </div>
         <div class="dashboard-stat-body">
           <span class="dashboard-stat-value"><%= @household.rules.count %></span>
-          <span class="dashboard-stat-title">House Rules &rarr;</span>
+          <span class="dashboard-stat-title">House Hub &rarr;</span>
         </div>
       <% end %>
 
@@ -293,17 +293,33 @@
           <p class="dashboard-card-footnote">View inventory by room <span aria-hidden="true">&rarr;</span></p>
         <% end %>
 
-        <!-- CARD 4: HOUSE RULES & VOTING -->
+        <!-- CARD 4: HOUSE HUB & RULES -->
         <%= link_to household_rules_path(@household),
                     class: "dashboard-card dashboard-rules-card dashboard-card-link dashboard-chore-card-link",
                     aria: { labelledby: "voting-heading" } do %>
           <div class="dashboard-card-top">
             <span class="dashboard-card-number" aria-hidden="true">04</span>
-            <p class="dashboard-status">Not available yet</p>
+            <p class="dashboard-status">
+              <% if @pending_user_votes_count.positive? %>
+                <%= pluralize(@pending_user_votes_count, "vote") %> needed
+              <% elsif @open_proposals_count.positive? %>
+                Voting in progress
+              <% elsif @active_rules_count.positive? %>
+                <%= pluralize(@active_rules_count, "active rule") %>
+              <% else %>
+                All clear
+              <% end %>
+            </p>
           </div>
-          <h2 id="voting-heading">House rules &amp; voting</h2>
-          <p>Open proposals that need your vote will appear here when household voting is available.</p>
-          <p class="dashboard-card-footnote">View rules and agreements <span aria-hidden="true">&rarr;</span></p>
+          <h2 id="voting-heading">House Hub</h2>
+          <% if @pending_user_votes_count.positive? %>
+            <p><strong><%= pluralize(@pending_user_votes_count, "open proposal") %></strong> awaiting your vote.</p>
+          <% elsif @active_rules_count.positive? %>
+            <p><%= pluralize(@active_rules_count, "active agreement") %> and household vault details in effect.</p>
+          <% else %>
+            <p>Household vault info, shared agreements, and voting polls.</p>
+          <% end %>
+          <p class="dashboard-card-footnote">Open House Hub <span aria-hidden="true">&rarr;</span></p>
         <% end %>
       </div>
     </div>
@@ -317,8 +333,10 @@
       <ul class="dashboard-member-list">
         <% @members.each do |member| %>
           <li>
-            <span class="dashboard-avatar" aria-hidden="true"><%= member.name.first.upcase %></span>
-            <span><%= member.name %><% if member == current_user %> <span class="dashboard-you">(you)</span><% end %>
+            <%= user_avatar_tag(member, size: :md, extra_class: "dashboard-avatar") %>
+            <span><%= member.name %><% if member == current_user %> <span class="dashboard-you">(you)</span>
+              <button type="button" class="dashboard-avatar-edit-trigger" onclick="document.getElementById('avatar-picker-dialog').showModal()" title="Change your avatar">Edit Avatar</button>
+            <% end %>
               <% if @household.admin?(member) %><span class="dashboard-admin-badge">Admin</span><% end %>
             </span>
           </li>

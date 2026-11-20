@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
   delete "/logout", to: "sessions#destroy", as: :logout
   resource :notification_preferences, only: %i[show update]
+  resource :profile, only: %i[update]
 
   resources :households, only: [ :index, :new, :create, :show ] do
   member do
@@ -60,6 +61,9 @@ Rails.application.routes.draw do
     end
 
     resources :rules do
+      collection do
+        patch :vault, to: "rules#update_vault"
+      end
       member do
         post :vote
         get :amend
@@ -67,6 +71,7 @@ Rails.application.routes.draw do
         get :history
       end
     end
+    get "house_hub", to: "rules#index", as: :house_hub
   end
 
   get "/join-household",

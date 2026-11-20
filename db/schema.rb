@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_15_172310) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_18_143510) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -37,7 +37,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_172310) do
     t.index ["created_by_id"], name: "index_chores_on_created_by_id"
     t.index ["household_id", "due_at"], name: "index_chores_on_household_id_and_due_at"
     t.index ["household_id"], name: "index_chores_on_household_id"
-    t.check_constraint "frequency::text = ANY (ARRAY['NONE'::character varying::text, 'DAILY'::character varying::text, 'WEEKLY'::character varying::text, 'MONTHLY'::character varying::text])", name: "chores_valid_frequency"
+    t.check_constraint "frequency::text = ANY (ARRAY['NONE'::character varying, 'DAILY'::character varying, 'WEEKLY'::character varying, 'MONTHLY'::character varying]::text[])", name: "chores_valid_frequency"
   end
 
   create_table "event_attendees", id: false, force: :cascade do |t|
@@ -116,7 +116,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_172310) do
     t.index ["household_id"], name: "index_household_memberships_on_household_id"
     t.index ["user_id", "household_id"], name: "index_memberships_on_user_and_household", unique: true
     t.index ["user_id"], name: "index_household_memberships_on_user_id"
-    t.check_constraint "role::text = ANY (ARRAY['admin'::character varying::text, 'member'::character varying::text])", name: "household_memberships_valid_role"
+    t.check_constraint "role::text = ANY (ARRAY['admin'::character varying, 'member'::character varying]::text[])", name: "household_memberships_valid_role"
   end
 
   create_table "households", force: :cascade do |t|
@@ -126,6 +126,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_172310) do
     t.datetime "updated_at", null: false
     t.string "invite_code"
     t.datetime "inventory_seeded_at"
+    t.string "wifi_ssid"
+    t.string "wifi_password"
+    t.string "trash_pickup"
+    t.string "landlord_hotline"
+    t.string "apartment_name"
+    t.text "mailing_address"
+    t.string "map_link"
     t.index ["creator_id"], name: "index_households_on_creator_id"
     t.index ["invite_code"], name: "index_households_on_invite_code", unique: true
   end
@@ -142,7 +149,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_172310) do
     t.index ["household_id"], name: "index_inventory_items_on_household_id"
     t.check_constraint "low_stock_threshold >= 0 AND low_stock_threshold <= 9999", name: "inventory_items_valid_low_stock_threshold"
     t.check_constraint "quantity >= 0 AND quantity <= 9999", name: "inventory_items_valid_quantity"
-    t.check_constraint "room::text = ANY (ARRAY['living_room'::character varying::text, 'kitchen'::character varying::text, 'bedroom'::character varying::text, 'bathroom'::character varying::text, 'patio'::character varying::text])", name: "inventory_items_valid_room"
+    t.check_constraint "room::text = ANY (ARRAY['living_room'::character varying, 'kitchen'::character varying, 'bedroom'::character varying, 'bathroom'::character varying, 'patio'::character varying]::text[])", name: "inventory_items_valid_room"
   end
 
   create_table "notification_preferences", force: :cascade do |t|
@@ -224,6 +231,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_172310) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "avatar_key", default: "initials"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

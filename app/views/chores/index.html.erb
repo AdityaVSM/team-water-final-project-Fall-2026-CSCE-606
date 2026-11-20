@@ -32,8 +32,11 @@
                 <% if chore.description.present? %>
                   <p><%= chore.description %></p>
                 <% end %>
-                <span class="dashboard-chore-assignees">
-                  Assigned to <%= chore.assignees.map(&:name).to_sentence %>
+                <span class="dashboard-chore-assignees" style="display: flex; align-items: center; gap: 0.35rem; margin-top: 0.2rem;">
+                  <% chore.assignees.each do |assignee| %>
+                    <%= user_avatar_tag(assignee, size: :sm) %>
+                  <% end %>
+                  <span>Assigned to <%= chore.assignees.map(&:name).to_sentence %></span>
                 </span>
                 <span class="dashboard-chore-assignees">Created by <%= chore.creator.name %></span>
               </div>

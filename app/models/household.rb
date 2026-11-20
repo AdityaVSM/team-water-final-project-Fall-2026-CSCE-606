@@ -20,6 +20,9 @@ class Household < ApplicationRecord
 
   validates :name, presence: true
   validates :invite_code, uniqueness: true, allow_nil: true
+  validates :map_link,
+            format: { with: %r{\Ahttps?://}i, message: "must start with http:// or https://" },
+            allow_blank: true
 
   def admin?(user)
    user.present? &&

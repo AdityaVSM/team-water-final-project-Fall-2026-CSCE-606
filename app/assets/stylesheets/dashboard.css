@@ -200,6 +200,8 @@
   font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s ease;
 }
 
@@ -216,6 +218,13 @@
   text-decoration: none;
   white-space: nowrap;
   color: #245a47 !important;
+  flex-shrink: 0;
+  cursor: default;
+  user-select: none;
+}
+
+a.dashboard-brand {
+  cursor: pointer;
 }
 
 .dashboard-brand-mark {
@@ -226,11 +235,13 @@
   background: #245a47;
   color: #fff;
   border-radius: 0.65rem;
+  flex-shrink: 0;
 }
 
 .dashboard-household-dropdown {
   position: relative;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .dashboard-household-dropdown summary {
@@ -255,7 +266,19 @@
   font-weight: 600;
   color: var(--dashboard-ink) !important;
   text-decoration: none !important;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s ease;
+}
+
+.dashboard-household-pill span,
+.dashboard-household-name {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
+  vertical-align: middle;
 }
 
 .dashboard-household-pill:hover,
@@ -316,6 +339,74 @@
   font-size: 0.88rem;
   font-weight: 550;
   transition: all 0.12s ease;
+}
+
+.dashboard-avatar-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 50%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  flex-shrink: 0;
+}
+
+.dashboard-avatar-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 2px #245a47;
+}
+
+.dashboard-user-profile-widget {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.65rem;
+  margin-bottom: 0.75rem;
+  border-radius: 0.5rem;
+  background: #f0f5eb;
+  border: 1px solid var(--dashboard-line);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dashboard-user-profile-widget:hover {
+  background: #e3ecdd;
+  border-color: #245a47;
+}
+
+.dashboard-user-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1c332e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-avatar-edit-trigger {
+  background: transparent;
+  border: 1px solid #c7d6c4;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #245a47;
+  padding: 0.15rem 0.5rem;
+  margin-left: 0.4rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dashboard-avatar-edit-trigger:hover {
+  background: #245a47;
+  color: #ffffff;
+}
+
+.dashboard-dropdown-item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dashboard-dropdown-item:hover {
@@ -706,21 +797,51 @@
 
 @media (max-width: 768px) {
   .dashboard-sidebar {
-    transform: translateX(-100%);
     width: 250px !important;
     padding: 1.25rem 1rem !important;
+    transform: translateX(-100%);
   }
-  .dashboard-sidebar.is-open {
-    transform: translateX(0);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  .dashboard-sidebar.is-minimized {
+    width: 54px !important;
+    padding: 1rem 0.35rem !important;
+    transform: translateX(0) !important;
   }
   .dashboard-sidebar.is-minimized .dashboard-brand-text,
   .dashboard-sidebar.is-minimized .dashboard-sidebar-link span,
   .dashboard-sidebar.is-minimized .dashboard-sidebar-footer form {
+    display: none !important;
+  }
+  .dashboard-sidebar.is-open {
+    width: 250px !important;
+    transform: translateX(0) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  }
+  .dashboard-sidebar.is-open .dashboard-brand-text,
+  .dashboard-sidebar.is-open .dashboard-sidebar-link span,
+  .dashboard-sidebar.is-open .dashboard-sidebar-footer form {
     display: inline !important;
   }
-  .dashboard-header { padding-left: 1.25rem; }
-  .dashboard-main { padding-left: 1.25rem; }
+  .dashboard-header { padding-left: 4.25rem; }
+  .dashboard-header-brand-wrap {
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  .dashboard-household-pill {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .dashboard-household-pill span,
+  .dashboard-household-name {
+    max-width: 130px;
+  }
+  .dashboard-dropdown-menu {
+    left: auto;
+    right: 0;
+    min-width: 220px;
+    max-width: calc(100vw - 2rem);
+    box-sizing: border-box;
+  }
+  .dashboard-main { padding-left: 4.25rem; }
   .dashboard-quick-tabs { display: none; }
 }
 
