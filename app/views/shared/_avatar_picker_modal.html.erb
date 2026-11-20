@@ -13,7 +13,7 @@
         <span class="avatar-picker-section-label">Automated Profile Picture</span>
         <label class="avatar-choice-card <%= 'is-selected' if current_user.avatar_key == 'gravatar' %>">
           <%= f.radio_button :avatar_key, "gravatar", class: "avatar-choice-radio" %>
-          <img src="<%= current_user.gravatar_url(80) %>" class="user-avatar user-avatar--md user-avatar-img" alt="Gravatar" />
+          <img src="<%= current_user.gravatar_url(80) %>" class="user-avatar user-avatar--md user-avatar-img" alt="Gravatar" loading="lazy" />
           <div class="avatar-choice-meta">
             <strong>Gravatar / Email Photo</strong>
             <span>Syncs photo automatically from <%= current_user.email %></span>

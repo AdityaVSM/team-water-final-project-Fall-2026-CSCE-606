@@ -269,7 +269,8 @@
   border-color: #245a47;
 }
 
-.avatar-choice-card.is-selected {
+.avatar-choice-card.is-selected,
+.avatar-choice-card:has(input:checked) {
   background: #eef5eb;
   border-color: #245a47;
   box-shadow: 0 0 0 2px rgba(36, 90, 71, 0.15);
@@ -317,7 +318,8 @@
   transform: translateY(-1px);
 }
 
-.avatar-preset-btn.is-selected {
+.avatar-preset-btn.is-selected,
+.avatar-preset-btn:has(input:checked) {
   background: #eef5eb;
   border-color: #245a47;
   box-shadow: 0 0 0 2px rgba(36, 90, 71, 0.15);
@@ -330,7 +332,8 @@
   opacity: 0;
 }
 
-.avatar-preset-btn.is-selected .avatar-choice-radio {
+.avatar-preset-btn.is-selected .avatar-choice-radio,
+.avatar-preset-btn:has(input:checked) .avatar-choice-radio {
   opacity: 1;
 }
 
